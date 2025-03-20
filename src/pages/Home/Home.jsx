@@ -9,6 +9,7 @@ import {
   FaCalendarAlt,
   FaClock,
 } from "react-icons/fa";
+import CustomerReviewsSection from "./components/CustomerReviewsSection";
 
 const Home = () => {
   const [pickupPoint, setPickupPoint] = useState("");
@@ -336,85 +337,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="py-16 px-6 md:px-12 lg:px-24">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-center">
-              Customer <span className="text-yellow-500">Reviews</span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-gray-800 bg-opacity-70 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gray-700 flex items-center justify-center mr-4">
-                    <span className="text-xl font-bold">S</span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold">Sarah Johnson</h4>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className="text-yellow-500 mr-1" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-300">
-                  "Our driver Nimal was exceptional! He was punctual,
-                  knowledgeable about the local attractions, and made our trip
-                  around Sri Lanka truly memorable. The van was comfortable and
-                  well-maintained."
-                </p>
-              </div>
-
-              <div className="bg-gray-800 bg-opacity-70 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gray-700 flex items-center justify-center mr-4">
-                    <span className="text-xl font-bold">J</span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold">John Smith</h4>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <FaStar
-                          key={i}
-                          className={`${
-                            i < 4 ? "text-yellow-500" : "text-gray-600"
-                          } mr-1`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-300">
-                  "Booking was simple and straightforward. We had a comfortable
-                  car with a friendly driver who spoke good English. Great
-                  service at a reasonable price!"
-                </p>
-              </div>
-
-              <div className="bg-gray-800 bg-opacity-70 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gray-700 flex items-center justify-center mr-4">
-                    <span className="text-xl font-bold">M</span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold">Mei Lin</h4>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className="text-yellow-500 mr-1" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-300">
-                  "We hired a minivan for our family trip around the island. The
-                  vehicle was spacious and comfortable. Our driver Saman was
-                  excellent - very patient and helpful with our three kids.
-                  Highly recommended!"
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CustomerReviewsSection />
 
         <footer className="bg-gray-900 py-12 px-6 md:px-12 lg:px-24">
           <div className="max-w-7xl mx-auto">
