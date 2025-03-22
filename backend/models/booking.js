@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
   vehicleId: {
@@ -20,4 +20,4 @@ const bookingSchema = new mongoose.Schema({
   status: String,
 });
 
-module.exports = mongoose.model("Booking", bookingSchema);
+export default mongoose.model("Booking", bookingSchema);

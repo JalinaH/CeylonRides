@@ -1,9 +1,12 @@
-const express = require("express");
-const connectDB = require("./config/db");
-const vehicleRoutes = require("./routes/vehicleRoutes");
-const driverRoutes = require("./routes/driverRoutes");
-const bookingRoutes = require("./routes/bookingRoutes");
-const userRoutes = require("./routes/userRoutes");
+import express from "express";
+import connectDB from "./config/db.js";
+import vehicleRoutes from "./routes/vehicleRoutes.js";
+import driverRoutes from "./routes/driverRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -19,5 +22,5 @@ app.use("/api", driverRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", userRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

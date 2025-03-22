@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const vehicleSchema = new mongoose.Schema({
   type: String,
@@ -13,4 +13,6 @@ const vehicleSchema = new mongoose.Schema({
   availabilityStatus: Boolean,
 });
 
-module.exports = mongoose.model("Vehicle", vehicleSchema);
+const Vehicle = mongoose.model("Vehicle", vehicleSchema);
+
+export default Vehicle;

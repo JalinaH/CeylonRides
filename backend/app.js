@@ -1,7 +1,12 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
-const cors = require("cors");
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import cors from "cors";
+import vehiclesRoutes from "./routes/vehicles.js";
+import driversRoutes from "./routes/drivers.js";
+import usersRoutes from "./routes/users.js";
+import bookingsRoutes from "./routes/bookings.js";
+import reviewsRoutes from "./routes/reviews.js";
 
 // Load env vars
 dotenv.config();
@@ -18,15 +23,15 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use("/api/vehicles", require("./routes/vehicles"));
-app.use("/api/drivers", require("./routes/drivers"));
-app.use("/api/users", require("./routes/users"));
-app.use("/api/bookings", require("./routes/bookings"));
-app.use("/api/reviews", require("./routes/reviews"));
+app.use("/api/vehicles", vehiclesRoutes);
+app.use("/api/drivers", driversRoutes);
+app.use("/api/users", usersRoutes);
+app.use("/api/bookings", bookingsRoutes);
+app.use("/api/reviews", reviewsRoutes);
 
 // Base route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-module.exports = app;
+export default app;

@@ -1,5 +1,5 @@
-const express = require("express");
-const driverController = require("../controllers/driverController");
+import express from "express";
+import * as driverController from "../controllers/driverController.js";
 
 const router = express.Router();
 
@@ -9,4 +9,4 @@ router.get("/drivers/:id", driverController.getDriverById);
 router.put("/drivers/:id", driverController.updateDriver);
 router.delete("/drivers/:id", driverController.deleteDriver);
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const express = require("express");
-const vehicleController = require("../controllers/vehicleController");
+import express from "express";
+import * as vehicleController from "../controllers/vehicleController.js";
 
 const router = express.Router();
 
@@ -9,4 +9,4 @@ router.get("/vehicles/:id", vehicleController.getVehicleById);
 router.put("/vehicles/:id", vehicleController.updateVehicle);
 router.delete("/vehicles/:id", vehicleController.deleteVehicle);
 
-module.exports = router;
+export default router;

@@ -1,7 +1,7 @@
-const Driver = require("../models/driver");
+import Driver from "../models/driver.js";
 
 // Create a new driver
-exports.createDriver = async (req, res) => {
+export const createDriver = async (req, res) => {
   try {
     const driver = new Driver(req.body);
     await driver.save();
@@ -12,7 +12,7 @@ exports.createDriver = async (req, res) => {
 };
 
 // Get all drivers
-exports.getAllDrivers = async (req, res) => {
+export const getAllDrivers = async (req, res) => {
   try {
     const drivers = await Driver.find().populate("assignedVehicle");
     res.status(200).json(drivers);
@@ -22,7 +22,7 @@ exports.getAllDrivers = async (req, res) => {
 };
 
 // Get a single driver by ID
-exports.getDriverById = async (req, res) => {
+export const getDriverById = async (req, res) => {
   try {
     const driver = await Driver.findById(req.params.id).populate(
       "assignedVehicle"
@@ -37,7 +37,7 @@ exports.getDriverById = async (req, res) => {
 };
 
 // Update a driver by ID
-exports.updateDriver = async (req, res) => {
+export const updateDriver = async (req, res) => {
   try {
     const driver = await Driver.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -52,7 +52,7 @@ exports.updateDriver = async (req, res) => {
 };
 
 // Delete a driver by ID
-exports.deleteDriver = async (req, res) => {
+export const deleteDriver = async (req, res) => {
   try {
     const driver = await Driver.findByIdAndDelete(req.params.id);
     if (!driver) {

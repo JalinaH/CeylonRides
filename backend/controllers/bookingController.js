@@ -1,7 +1,7 @@
-const Booking = require("../models/booking");
+import Booking from "../models/booking.js";
 
 // Create a new booking
-exports.createBooking = async (req, res) => {
+export const createBooking = async (req, res) => {
   try {
     const booking = new Booking(req.body);
     await booking.save();
@@ -12,7 +12,7 @@ exports.createBooking = async (req, res) => {
 };
 
 // Get all bookings
-exports.getAllBookings = async (req, res) => {
+export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find().populate(
       "vehicleId driverId touristId"
@@ -24,7 +24,7 @@ exports.getAllBookings = async (req, res) => {
 };
 
 // Get a single booking by ID
-exports.getBookingById = async (req, res) => {
+export const getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id).populate(
       "vehicleId driverId touristId"
@@ -39,7 +39,7 @@ exports.getBookingById = async (req, res) => {
 };
 
 // Update a booking by ID
-exports.updateBooking = async (req, res) => {
+export const updateBooking = async (req, res) => {
   try {
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -54,7 +54,7 @@ exports.updateBooking = async (req, res) => {
 };
 
 // Delete a booking by ID
-exports.deleteBooking = async (req, res) => {
+export const deleteBooking = async (req, res) => {
   try {
     const booking = await Booking.findByIdAndDelete(req.params.id);
     if (!booking) {
