@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+/* Custom Calendar Styling */
+.custom-calendar {
+  background-color: #374151; /* Dark background for the calendar */
+  color: #ffffff; /* White text */
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.custom-calendar .rbc-header {
+  background-color: #4b5563; /* Darker background for headers */
+  color: #ffffff; /* White text */
+  padding: 10px;
+  border-bottom: 1px solid #6b7280; /* Light border */
+}
+
+.custom-calendar .rbc-day-bg + .rbc-day-bg,
+.custom-calendar .rbc-header + .rbc-header {
+  border-left: 1px solid #6b7280; /* Light border between cells */
+}
+
+.custom-calendar .rbc-month-view,
+.custom-calendar .rbc-time-view {
+  border: 1px solid #6b7280; /* Light border around the calendar */
+}
+
+.custom-calendar .rbc-today {
+  background-color: #1f2937; /* Darker background for today's date */
+}
+
+.custom-calendar .rbc-off-range-bg {
+  background-color: #4b5563; /* Darker background for off-range dates */
+}
+
+.custom-calendar .rbc-event {
+  background-color: #fcd34d; /* Lighter yellow for occupied dates */
+  color: #1f2937; /* Dark text for events */
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.custom-calendar .rbc-event:hover {
+  background-color: #fbbf24; /* Slightly darker yellow on hover */
+}
+.custom-calendar .rbc-off-range-bg {
+  background-color: #4b5563; /* Darker background for off-range dates */
+}
+
+.custom-calendar .rbc-event {
+  background-color: #f59e0b; /* Yellow background for events */
+  color: #1f2937; /* Dark text for events */
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.custom-calendar .rbc-event:hover {
+  background-color: #eab308; /* Darker yellow on hover */
+}
