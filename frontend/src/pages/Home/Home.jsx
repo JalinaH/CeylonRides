@@ -9,7 +9,8 @@ import {
   FaCalendarAlt,
   FaClock,
 } from "react-icons/fa";
-import CustomerReviewsSection from "./components/CustomerReviewsSection";
+import CustomerReviewsSection from "../../components/CustomerReviewsSection";
+import Navbar from "../../components/Navbar";
 
 const Home = () => {
   const [pickupPoint, setPickupPoint] = useState("");
@@ -34,24 +35,7 @@ const Home = () => {
       <div className="absolute inset-0 bg-black opacity-80 z-0"></div>
 
       <div className="relative z-10">
-        <nav className="bg-gray-900 bg-opacity-90 py-4 px-6 flex justify-between items-center">
-          <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-white">
-              <span className="text-yellow-500">Ceylon</span>Rides
-            </h1>
-          </div>
-          <div className="flex items-center space-x-6">
-            <a href="#" className="hover:text-yellow-500 transition">
-              Manage My Bookings
-            </a>
-            <a
-              href="#"
-              className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-lg transition"
-            >
-              Login
-            </a>
-          </div>
-        </nav>
+        <Navbar />
 
         <div className="py-16 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center">
