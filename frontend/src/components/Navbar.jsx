@@ -14,6 +14,12 @@ const Navbar = () => {
           Home
         </Link>
         <Link
+          to="/available-vehicles"
+          className="hover:text-yellow-500 transition"
+        >
+          Available Vehicles
+        </Link>
+        <Link
           to="/manage-bookings"
           className="hover:text-yellow-500 transition"
         >

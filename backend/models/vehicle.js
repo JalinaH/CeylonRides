@@ -1,18 +1,56 @@
 import mongoose from "mongoose";
 
 const vehicleSchema = new mongoose.Schema({
-  type: String,
-  brand: String,
-  model: String,
-  seatingCapacity: Number,
-  features: [String],
-  pricingDetails: {
-    perDay: Number,
-    perHour: Number,
+  type: {
+    type: String,
+    required: true,
   },
-  availabilityStatus: Boolean,
+  brand: {
+    type: String,
+    required: true,
+  },
+  model: {
+    type: String,
+    required: true,
+  },
+  seatingCapacity: {
+    type: Number,
+    required: true,
+  },
+  features: {
+    type: [String],
+    default: [],
+  },
+  pricingDetails: {
+    perDay: {
+      type: Number,
+      required: true,
+    },
+    perHour: {
+      type: Number,
+      required: true,
+    },
+  },
+  availabilityStatus: {
+    type: Boolean,
+    default: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  bookings: [
+    {
+      startDate: {
+        type: Date,
+        required: true,
+      },
+      endDate: {
+        type: Date,
+        required: true,
+      },
+    },
+  ],
 });
 
-const Vehicle = mongoose.model("Vehicle", vehicleSchema);
-
-export default Vehicle;
+export default mongoose.model("Vehicle", vehicleSchema);

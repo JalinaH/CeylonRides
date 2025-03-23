@@ -61,3 +61,25 @@ export const deleteVehicle = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const getVehicleAvailability = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (!vehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+
+    // Format the bookings for the calendar
+    const availability = vehicle.bookings.map((booking) => ({
+      start: booking.startDate,
+      end: booking.endDate,
+      title: "Booked", // Optional: Add a title for the calendar event
+    }));
+
+    res.status(200).json(availability);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching availability" });
+  }
+};
