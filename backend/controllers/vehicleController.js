@@ -83,3 +83,36 @@ export const getVehicleAvailability = async (req, res) => {
       .json({ error: "An error occurred while fetching availability" });
   }
 };
+
+export const getAvailableVehicles = async (req, res) => {
+  try {
+    const { pickupDate, returnDate, vehicleType } = req.query;
+
+    const query = {};
+
+    if (vehicleType && vehicleType !== "Any Vehicle") {
+      query.type = vehicleType;
+    }
+
+    const vehicles = await Vehicle.find(query);
+
+    const availableVehicles = vehicles.filter((vehicle) => {
+      const isAvailable = vehicle.bookings.every((booking) => {
+        const bookingStart = new Date(booking.startDate);
+        const bookingEnd = new Date(booking.endDate);
+        const selectedStart = new Date(pickupDate);
+        const selectedEnd = new Date(returnDate);
+
+        return selectedEnd < bookingStart || selectedStart > bookingEnd;
+      });
+
+      return isAvailable;
+    });
+
+    res.status(200).json(availableVehicles);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching available vehicles" });
+  }
+};

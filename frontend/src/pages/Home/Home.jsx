@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaStar,
   FaMapMarkerAlt,
@@ -7,7 +8,6 @@ import {
   FaCar,
   FaUsers,
   FaCalendarAlt,
-  FaClock,
 } from "react-icons/fa";
 import CustomerReviewsSection from "../../components/CustomerReviewsSection";
 import Navbar from "../../components/Navbar";
@@ -20,6 +20,23 @@ const Home = () => {
   const [returnDate, setReturnDate] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [returnTime, setReturnTime] = useState("");
+  const [vehicleType, setVehicleType] = useState("Any Vehicle");
+
+  const navigate = useNavigate();
+
+  const handleShowAvailableVehicles = () => {
+    const queryParams = new URLSearchParams({
+      pickupPoint,
+      returnPoint,
+      pickupDate,
+      returnDate,
+      pickupTime,
+      returnTime,
+      vehicleType,
+    }).toString();
+
+    navigate(`/available-vehicles?${queryParams}`);
+  };
 
   return (
     <div
@@ -57,6 +74,7 @@ const Home = () => {
                   placeholder="Enter pickup location"
                   value={pickupPoint}
                   onChange={(e) => setPickupPoint(e.target.value)}
+                  required
                 />
               </div>
               <div>
@@ -67,11 +85,17 @@ const Home = () => {
                   placeholder="Enter return location"
                   value={returnPoint}
                   onChange={(e) => setReturnPoint(e.target.value)}
+                  required
                 />
               </div>
               <div className="md:col-span-1">
                 <label className="block mb-2">Vehicle Type</label>
-                <select className="w-full p-3 bg-gray-700 rounded-lg text-white">
+                <select
+                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
+                  value={vehicleType}
+                  onChange={(e) => setVehicleType(e.target.value)}
+                  required
+                >
                   <option>Any Vehicle</option>
                   <option>Car</option>
                   <option>Van</option>
@@ -90,6 +114,7 @@ const Home = () => {
                   className="w-full p-3 bg-gray-700 rounded-lg text-white"
                   value={pickupDate}
                   onChange={(e) => setPickupDate(e.target.value)}
+                  required
                 />
               </div>
               <div>
@@ -99,6 +124,7 @@ const Home = () => {
                   className="w-full p-3 bg-gray-700 rounded-lg text-white"
                   value={pickupTime}
                   onChange={(e) => setPickupTime(e.target.value)}
+                  required
                 />
               </div>
               <div>
@@ -108,6 +134,7 @@ const Home = () => {
                   className="w-full p-3 bg-gray-700 rounded-lg text-white"
                   value={returnDate}
                   onChange={(e) => setReturnDate(e.target.value)}
+                  required
                 />
               </div>
               <div>
@@ -117,11 +144,15 @@ const Home = () => {
                   className="w-full p-3 bg-gray-700 rounded-lg text-white"
                   value={returnTime}
                   onChange={(e) => setReturnTime(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
-            <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition text-center">
+            <button
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition text-center"
+              onClick={handleShowAvailableVehicles}
+            >
               Show Available Vehicles
             </button>
           </div>
