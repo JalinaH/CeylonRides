@@ -103,6 +103,7 @@ export const getAvailableVehicles = async (req, res) => {
         const selectedStart = new Date(pickupDate);
         const selectedEnd = new Date(returnDate);
 
+        // Check if the selected dates overlap with any booking
         return selectedEnd < bookingStart || selectedStart > bookingEnd;
       });
 

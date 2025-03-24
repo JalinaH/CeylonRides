@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaStar,
@@ -12,27 +12,20 @@ import {
 import CustomerReviewsSection from "../../components/CustomerReviewsSection";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import VehicleBookingForm from "../../components/VehicleBookingForm";
 
 const Home = () => {
-  const [pickupPoint, setPickupPoint] = useState("");
-  const [returnPoint, setReturnPoint] = useState("");
-  const [pickupDate, setPickupDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
-  const [pickupTime, setPickupTime] = useState("");
-  const [returnTime, setReturnTime] = useState("");
-  const [vehicleType, setVehicleType] = useState("Any Vehicle");
-
   const navigate = useNavigate();
 
-  const handleShowAvailableVehicles = () => {
+  const handleFormSubmit = (formData) => {
     const queryParams = new URLSearchParams({
-      pickupPoint,
-      returnPoint,
-      pickupDate,
-      returnDate,
-      pickupTime,
-      returnTime,
-      vehicleType,
+      pickupPoint: formData.pickupPoint,
+      returnPoint: formData.returnPoint,
+      pickupDate: formData.pickupDate,
+      returnDate: formData.returnDate,
+      pickupTime: formData.pickupTime,
+      returnTime: formData.returnTime,
+      vehicleType: formData.vehicleType,
     }).toString();
 
     navigate(`/available-vehicles?${queryParams}`);
@@ -61,101 +54,7 @@ const Home = () => {
             <span className="text-yellow-500">Premium Vehicles</span>
           </h1>
 
-          <div className="bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg mb-16">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Book Your Vehicle
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div>
-                <label className="block mb-2">Pickup Point</label>
-                <input
-                  type="text"
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  placeholder="Enter pickup location"
-                  value={pickupPoint}
-                  onChange={(e) => setPickupPoint(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2">Return Point</label>
-                <input
-                  type="text"
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  placeholder="Enter return location"
-                  value={returnPoint}
-                  onChange={(e) => setReturnPoint(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="md:col-span-1">
-                <label className="block mb-2">Vehicle Type</label>
-                <select
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  value={vehicleType}
-                  onChange={(e) => setVehicleType(e.target.value)}
-                  required
-                >
-                  <option>Any Vehicle</option>
-                  <option>Car</option>
-                  <option>Van</option>
-                  <option>SUV</option>
-                  <option>Bus</option>
-                  <option>Scooter</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div>
-                <label className="block mb-2">Pickup Date</label>
-                <input
-                  type="date"
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  value={pickupDate}
-                  onChange={(e) => setPickupDate(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2">Pickup Time</label>
-                <input
-                  type="time"
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  value={pickupTime}
-                  onChange={(e) => setPickupTime(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2">Return Date</label>
-                <input
-                  type="date"
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  value={returnDate}
-                  onChange={(e) => setReturnDate(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-2">Return Time</label>
-                <input
-                  type="time"
-                  className="w-full p-3 bg-gray-700 rounded-lg text-white"
-                  value={returnTime}
-                  onChange={(e) => setReturnTime(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              className="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition text-center"
-              onClick={handleShowAvailableVehicles}
-            >
-              Show Available Vehicles
-            </button>
-          </div>
+          <VehicleBookingForm onSubmit={handleFormSubmit} />
         </div>
 
         <div className="py-16 px-6 md:px-12 lg:px-24 bg-gray-800 bg-opacity-60">

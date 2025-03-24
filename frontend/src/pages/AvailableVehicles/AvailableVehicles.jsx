@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const AvailableVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
-    // Fetch available vehicles from the backend
-    fetch("http://localhost:5001/api/vehicles")
-      .then((response) => response.json())
-      .then((data) => setVehicles(data))
-      .catch((error) => console.error("Error fetching vehicles:", error));
-  }, []);
+    // Extract query parameters from the URL
+    const queryParams = new URLSearchParams(location.search);
+    const pickupDate = queryParams.get("pickupDate");
+    const returnDate = queryParams.get("returnDate");
+    const vehicleType = queryParams.get("vehicleType");
+
+    // Determine the API endpoint based on whether filters are provided
+    let url = "http://localhost:5001/api/vehicles";
+    if (pickupDate && returnDate && vehicleType) {
+      url = `http://localhost:5001/api/vehicles/available?pickupDate=${pickupDate}&returnDate=${returnDate}&vehicleType=${vehicleType}`;
+    }
+
+    // Fetch vehicles from the backend
+    const fetchVehicles = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setVehicles(data);
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      }
+    };
+
+    fetchVehicles();
+  }, [location.search]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
       <div className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-8 text-center">
-          Available Vehicles
+          {vehicles.length > 0 ? "Available Vehicles" : "No Vehicles Available"}
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {vehicles.map((vehicle) => (
