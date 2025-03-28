@@ -130,3 +130,36 @@ export const createBooking = async (req, res) => {
     });
   }
 };
+
+export const getUserBookings = async (req, res) => {
+  // We get the userId from the authenticated request (added by middleware later)
+  const userId = req.userId; // Assumes authentication middleware adds userId to req
+
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized: User ID not found." });
+  }
+
+  try {
+    // Find bookings where the userId matches
+    // Sort by pickupDate descending (most recent first) - adjust as needed
+    const bookings = await Booking.find({ userId: userId }).sort({
+      pickupDate: -1,
+    });
+
+    if (!bookings) {
+      // This case might not happen with find, it would return []
+      // but good practice to handle potentially null/undefined results
+      return res
+        .status(404)
+        .json({ error: "No bookings found for this user." });
+    }
+
+    res.status(200).json(bookings); // Send the array of bookings
+  } catch (error) {
+    console.error("Error fetching user bookings:", error);
+    res.status(500).json({
+      error: "Server error while fetching bookings.",
+      details: error.message,
+    });
+  }
+};

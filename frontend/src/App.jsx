@@ -7,6 +7,7 @@ import BookingConfirmationPage from "./pages/BookingConfirmationPage/BookingConf
 import ProtectedRoute from "./components/ProtectedRoute";
 import RegisterPage from "./pages/Register/Register";
 import LoginPage from "./pages/Login/Login";
+import MyBookingsPage from "./pages/MyBookings/MyBookingsPage";
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
         element={
           <ProtectedRoute>
             <BookingConfirmationPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manage-bookings"
+        element={
+          <ProtectedRoute>
+            <MyBookingsPage />
           </ProtectedRoute>
         }
       />
