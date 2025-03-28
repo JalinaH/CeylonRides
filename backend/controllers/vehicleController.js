@@ -84,36 +84,54 @@ export const getVehicleAvailability = async (req, res) => {
   }
 };
 
+
+// controllers/vehicleController.js
 export const getAvailableVehicles = async (req, res) => {
   try {
-    const { pickupDate, returnDate, vehicleType } = req.query;
+    // Decode URL parameters
+    const pickupDate = decodeURIComponent(req.query.pickupDate);
+    const returnDate = decodeURIComponent(req.query.returnDate);
+    const vehicleType = req.query.vehicleType 
+      ? decodeURIComponent(req.query.vehicleType) 
+      : null;
 
+    // Validate dates
+    const startDate = new Date(pickupDate);
+    const endDate = new Date(returnDate);
+    
+    if (isNaN(startDate)) {
+      return res.status(400).json({ error: "Invalid pickupDate format" });
+    }
+    if (isNaN(endDate)) {
+      return res.status(400).json({ error: "Invalid returnDate format" });
+    }
+    if (startDate >= endDate) {
+      return res.status(400).json({ error: "returnDate must be after pickupDate" });
+    }
+
+    // Build query
     const query = {};
-
     if (vehicleType && vehicleType !== "Any Vehicle") {
       query.type = vehicleType;
     }
 
+    // Find available vehicles
     const vehicles = await Vehicle.find(query);
-
-    const availableVehicles = vehicles.filter((vehicle) => {
-      const isAvailable = vehicle.bookings.every((booking) => {
+    
+    const availableVehicles = vehicles.filter(vehicle => {
+      return !vehicle.bookings.some(booking => {
         const bookingStart = new Date(booking.startDate);
         const bookingEnd = new Date(booking.endDate);
-        const selectedStart = new Date(pickupDate);
-        const selectedEnd = new Date(returnDate);
-
-        // Check if the selected dates overlap with any booking
-        return selectedEnd < bookingStart || selectedStart > bookingEnd;
+        return startDate < bookingEnd && endDate > bookingStart;
       });
-
-      return isAvailable;
     });
 
-    res.status(200).json(availableVehicles);
+    res.json(availableVehicles);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching available vehicles" });
+    console.error("Error in getAvailableVehicles:", error);
+    res.status(500).json({ 
+      error: "Server error",
+      details: error.message 
+    });
   }
 };

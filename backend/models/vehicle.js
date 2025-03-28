@@ -44,10 +44,22 @@ const vehicleSchema = new mongoose.Schema({
       startDate: {
         type: Date,
         required: true,
+        validate: {
+          validator: function (v) {
+            return v instanceof Date && !isNaN(v);
+          },
+          message: "Invalid start date",
+        },
       },
       endDate: {
         type: Date,
         required: true,
+        validate: {
+          validator: function (v) {
+            return v instanceof Date && !isNaN(v) && v > this.startDate;
+          },
+          message: "End date must be after start date",
+        },
       },
     },
   ],

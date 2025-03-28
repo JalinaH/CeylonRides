@@ -1,17 +1,28 @@
+// routes/vehicleRoutes.js (Correct Order)
 import express from "express";
-import * as vehicleController from "../controllers/vehicleController.js";
+import {
+  getAvailableVehicles,
+  createVehicle,
+  getAllVehicles,
+  updateVehicle,
+  deleteVehicle,
+  getVehicleById,
+  getVehicleAvailability,
+} from "../controllers/vehicleController.js";
 
 const router = express.Router();
 
-router.post("/vehicles", vehicleController.createVehicle);
-router.get("/vehicles", vehicleController.getAllVehicles);
-router.get("/vehicles/:id", vehicleController.getVehicleById);
-router.put("/vehicles/:id", vehicleController.updateVehicle);
-router.delete("/vehicles/:id", vehicleController.deleteVehicle);
-router.get(
-  "/vehicles/:id/availability",
-  vehicleController.getVehicleAvailability
-);
-router.get("/vehicles/available", vehicleController.getAvailableVehicles);
+// --- General Vehicle Routes ---
+router.post("/vehicles", createVehicle);
+router.get("/vehicles", getAllVehicles);
+
+// --- Specific Routes Before Parameterized Routes ---
+router.get("/vehicles/available", getAvailableVehicles); // <<< Moved UP: Specific path checked first
+
+// --- Routes with :id Parameter ---
+router.get("/vehicles/:id", getVehicleById); // <<< Now checked after /available
+router.put("/vehicles/:id", updateVehicle);
+router.delete("/vehicles/:id", deleteVehicle);
+router.get("/vehicles/:id/availability", getVehicleAvailability); // This is also specific but comes after /:id is okay
 
 export default router;

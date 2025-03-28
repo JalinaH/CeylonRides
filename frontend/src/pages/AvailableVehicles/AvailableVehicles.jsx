@@ -5,34 +5,87 @@ import Footer from "../../components/Footer";
 
 const AvailableVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    // Extract query parameters from the URL
-    const queryParams = new URLSearchParams(location.search);
-    const pickupDate = queryParams.get("pickupDate");
-    const returnDate = queryParams.get("returnDate");
-    const vehicleType = queryParams.get("vehicleType");
-
-    // Determine the API endpoint based on whether filters are provided
-    let url = "http://localhost:5001/api/vehicles";
-    if (pickupDate && returnDate && vehicleType) {
-      url = `http://localhost:5001/api/vehicles/available?pickupDate=${pickupDate}&returnDate=${returnDate}&vehicleType=${vehicleType}`;
-    }
-
-    // Fetch vehicles from the backend
+    // AvailableVehicles.jsx
     const fetchVehicles = async () => {
+      setLoading(true); // Set loading true at the start
+      setError(null);
       try {
+        const queryParams = new URLSearchParams(location.search);
+        const pickupDate = queryParams.get("pickupDate");
+        const returnDate = queryParams.get("returnDate");
+        const vehicleType = queryParams.get("vehicleType");
+
+        if (!pickupDate || !returnDate) {
+          throw new Error("Both pickup and return dates are required");
+        }
+
+        let url = `/api/vehicles/available?pickupDate=${encodeURIComponent(
+          pickupDate
+        )}&returnDate=${encodeURIComponent(returnDate)}`;
+        if (vehicleType && vehicleType !== "Any Vehicle") {
+          // Added check for 'Any Vehicle'
+          url += `&vehicleType=${encodeURIComponent(vehicleType)}`;
+        }
+        console.log("Fetching URL:", url); // Add this line for debugging
         const response = await fetch(url);
-        const data = await response.json();
+
+        if (!response.ok) {
+          // Try to get text content first to see the HTML error
+          const errorText = await response.text();
+          console.error("Non-OK response body:", errorText);
+          // Try parsing as JSON *if* header indicates it, otherwise use text
+          let errorData = {};
+          try {
+            if (
+              response.headers.get("content-type")?.includes("application/json")
+            ) {
+              errorData = JSON.parse(errorText); // Manually parse if needed after logging
+            }
+          } catch (parseError) {
+            console.error(
+              "Could not parse error response as JSON:",
+              parseError
+            );
+          }
+          throw new Error(
+            errorData.error ||
+              errorData.message ||
+              `HTTP error! Status: ${
+                response.status
+              }. Response: ${errorText.substring(0, 100)}...` // Show snippet of HTML
+          );
+        }
+
+        const data = await response.json(); // Only parse as JSON if response.ok
         setVehicles(data);
       } catch (error) {
-        console.error("Error fetching vehicles:", error);
+        console.error("Fetch error:", error);
+        setError(error.message || "An unknown error occurred"); // Ensure error is a string
+        setVehicles([]);
+      } finally {
+        setLoading(false); // <<< Make sure loading is set to false here
       }
     };
 
     fetchVehicles();
   }, [location.search]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-6">Loading...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-6">{error}</div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
