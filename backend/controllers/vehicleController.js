@@ -1,4 +1,5 @@
 import Vehicle from "../models/vehicle.js";
+import moment from "moment";
 
 // Create a new vehicle
 export const createVehicle = async (req, res) => {
@@ -88,50 +89,77 @@ export const getVehicleAvailability = async (req, res) => {
 // controllers/vehicleController.js
 export const getAvailableVehicles = async (req, res) => {
   try {
-    // Decode URL parameters
-    const pickupDate = decodeURIComponent(req.query.pickupDate);
-    const returnDate = decodeURIComponent(req.query.returnDate);
-    const vehicleType = req.query.vehicleType 
-      ? decodeURIComponent(req.query.vehicleType) 
+    // Decode URL parameters safely, allowing them to be null
+    const rawPickupDate = req.query.pickupDate
+      ? decodeURIComponent(req.query.pickupDate)
+      : null;
+    const rawReturnDate = req.query.returnDate
+      ? decodeURIComponent(req.query.returnDate)
+      : null;
+    const vehicleType = req.query.vehicleType
+      ? decodeURIComponent(req.query.vehicleType)
       : null;
 
-    // Validate dates
-    const startDate = new Date(pickupDate);
-    const endDate = new Date(returnDate);
-    
-    if (isNaN(startDate)) {
-      return res.status(400).json({ error: "Invalid pickupDate format" });
-    }
-    if (isNaN(endDate)) {
-      return res.status(400).json({ error: "Invalid returnDate format" });
-    }
-    if (startDate >= endDate) {
-      return res.status(400).json({ error: "returnDate must be after pickupDate" });
+    let startDate, endDate;
+    let areDatesProvidedAndValid = false; // Flag to check if we need to filter by date
+
+    // --- Date Validation ---
+    if (rawPickupDate && rawReturnDate) {
+      startDate = moment(rawPickupDate); 
+      endDate = moment(rawReturnDate);
+
+      // Check if dates are valid Moment objects and in the correct order
+      if (
+        startDate.isValid() &&
+        endDate.isValid() &&
+        startDate.isBefore(endDate)
+      ) {
+        areDatesProvidedAndValid = true;
+      } else {
+        // Log a warning if dates were provided but invalid/out of order
+        console.warn(
+          "getAvailableVehicles: Invalid or out-of-order dates provided. Ignoring date filter."
+        );
+      }
     }
 
-    // Build query
+    // --- Build Base Query (for vehicle type) ---
     const query = {};
     if (vehicleType && vehicleType !== "Any Vehicle") {
       query.type = vehicleType;
     }
 
-    // Find available vehicles
+    // --- Find Vehicles Matching Type (or all if no type) ---
     const vehicles = await Vehicle.find(query);
-    
-    const availableVehicles = vehicles.filter(vehicle => {
-      return !vehicle.bookings.some(booking => {
-        const bookingStart = new Date(booking.startDate);
-        const bookingEnd = new Date(booking.endDate);
-        return startDate < bookingEnd && endDate > bookingStart;
+
+    // --- Filter by Date Availability (only if valid dates were provided) ---
+    const availableVehicles = vehicles.filter((vehicle) => {
+      // If valid dates were NOT provided, consider the vehicle available (skip date check)
+      if (!areDatesProvidedAndValid) {
+        // Optional: You could add another check here if you have a general 'isArchived' or 'maintenance' status
+        // return vehicle.isActive === true;
+        return true; // Passes the date filter if no dates to check against
+      }
+
+      // If valid dates WERE provided, check for booking conflicts
+      // Combine date and time for more precise checks if your Vehicle model stores times
+      // For simplicity now, assuming bookings are full-day based on startDate/endDate Dates
+      return !vehicle.bookings.some((booking) => {
+        const bookingStart = moment(booking.startDate).startOf("day"); // Ensure comparison starts at beginning of day
+        const bookingEnd = moment(booking.endDate).endOf("day"); // Ensure comparison ends at end of day
+
+        // Check for overlap:
+        // Requested start is before booking end AND Requested end is after booking start
+        return startDate.isBefore(bookingEnd) && endDate.isAfter(bookingStart);
       });
     });
 
     res.json(availableVehicles);
   } catch (error) {
     console.error("Error in getAvailableVehicles:", error);
-    res.status(500).json({ 
-      error: "Server error",
-      details: error.message 
+    res.status(500).json({
+      error: "Server error while fetching available vehicles",
+      details: error.message,
     });
   }
 };

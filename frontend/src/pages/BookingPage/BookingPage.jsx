@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
-  FaUser, FaEnvelope, FaPhone, FaCalendarAlt, FaClock, FaUsers,
-  FaMapMarkerAlt, FaCar, FaInfoCircle, FaDollarSign,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaCalendarAlt,
+  FaClock,
+  FaUsers,
+  FaMapMarkerAlt,
+  FaCar,
+  FaInfoCircle,
+  FaDollarSign,
 } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -24,7 +32,6 @@ const BookingPage = () => {
   const [formErrors, setFormErrors] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
 
-
   const [formData, setFormData] = useState(() => {
     const queryParams = new URLSearchParams(location.search);
     // Pre-fill name and email if user is logged in
@@ -45,69 +52,113 @@ const BookingPage = () => {
   });
 
   // --- Fetch Vehicle Details (useEffect remains the same) ---
-   useEffect(() => {
-      // ... (fetch vehicle logic - no changes needed here) ...
-        setLoading(true);
-        const fetchUrl = `/api/vehicles/${vehicleId}`;
-        fetch(fetchUrl)
-          .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch vehicle details");
-            return response.json();
-          })
-          .then((data) => { setVehicle(data); setSubmitError(null); })
-          .catch((err) => { console.error("Error fetching vehicle:", err); setSubmitError(err.message || "Could not load vehicle data."); setVehicle(null); })
-          .finally(() => { setLoading(false); });
-    }, [vehicleId]);
-
+  useEffect(() => {
+    // ... (fetch vehicle logic - no changes needed here) ...
+    setLoading(true);
+    const fetchUrl = `/api/vehicles/${vehicleId}`;
+    fetch(fetchUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch vehicle details");
+        return response.json();
+      })
+      .then((data) => {
+        setVehicle(data);
+        setSubmitError(null);
+      })
+      .catch((err) => {
+        console.error("Error fetching vehicle:", err);
+        setSubmitError(err.message || "Could not load vehicle data.");
+        setVehicle(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [vehicleId]);
 
   // --- Recalculate Price (useEffect remains the same) ---
   useEffect(() => {
     // ... (price calculation logic - no changes needed here) ...
     if (vehicle && formData.pickupDate && formData.returnDate) {
-        try {
-            const start = moment(`${formData.pickupDate} ${formData.pickupTime || "00:00"}`);
-            const end = moment(`${formData.returnDate} ${formData.returnTime || "23:59"}`);
-            if (!start.isValid() || !end.isValid() || end.isBefore(start)) { setTotalPrice(0); return; }
-            const durationDays = Math.ceil(end.diff(start, "days", true));
-            const calculatedDays = durationDays <= 0 ? 1 : durationDays;
-            let price = calculatedDays * vehicle.pricingDetails.perDay;
-            if (formData.driverOption === "withDriver") { price += calculatedDays * DRIVER_COST_PER_DAY; }
-            setTotalPrice(price);
-        } catch (calcError) { console.error("Price calculation error:", calcError); setTotalPrice(0); }
-    } else { setTotalPrice(0); }
-  }, [vehicle, formData.pickupDate, formData.pickupTime, formData.returnDate, formData.returnTime, formData.driverOption]);
+      try {
+        const start = moment(
+          `${formData.pickupDate} ${formData.pickupTime || "00:00"}`
+        );
+        const end = moment(
+          `${formData.returnDate} ${formData.returnTime || "23:59"}`
+        );
+        if (!start.isValid() || !end.isValid() || end.isBefore(start)) {
+          setTotalPrice(0);
+          return;
+        }
+        const durationDays = Math.ceil(end.diff(start, "days", true));
+        const calculatedDays = durationDays <= 0 ? 1 : durationDays;
+        let price = calculatedDays * vehicle.pricingDetails.perDay;
+        if (formData.driverOption === "withDriver") {
+          price += calculatedDays * DRIVER_COST_PER_DAY;
+        }
+        setTotalPrice(price);
+      } catch (calcError) {
+        console.error("Price calculation error:", calcError);
+        setTotalPrice(0);
+      }
+    } else {
+      setTotalPrice(0);
+    }
+  }, [
+    vehicle,
+    formData.pickupDate,
+    formData.pickupTime,
+    formData.returnDate,
+    formData.returnTime,
+    formData.driverOption,
+  ]);
 
   // --- Handle Input Change (remains the same) ---
-   const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: type === "checkbox" ? checked : value }));
-        if (formErrors[name]) { setFormErrors((prevErrors) => ({ ...prevErrors, [name]: null })); }
-   };
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+    if (formErrors[name]) {
+      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
+    }
+  };
 
   // --- Validate Form (remains the same) ---
-   const validateForm = () => {
-        // ... (validation logic - no changes needed here) ...
-         const errors = {};
-        if (!formData.name.trim()) errors.name = "Name is required";
-        if (!formData.email.trim()) errors.email = "Email is required";
-        else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Email is invalid";
-        if (!formData.phone.trim()) errors.phone = "Phone number is required";
-        if (!formData.pickupDate) errors.pickupDate = "Pickup date is required";
-        if (!formData.pickupTime) errors.pickupTime = "Pickup time is required";
-        if (!formData.returnDate) errors.returnDate = "Return date is required";
-        if (!formData.returnTime) errors.returnTime = "Return time is required";
-        if (!formData.pickupPoint.trim()) errors.pickupPoint = "Pickup point is required";
-        if (!formData.returnPoint.trim()) errors.returnPoint = "Return point is required";
-        if (formData.numTourists < 1) errors.numTourists = "At least 1 tourist";
-         if (formData.pickupDate && formData.returnDate) {
-             const start = moment(`${formData.pickupDate} ${formData.pickupTime || "00:00"}`);
-             const end = moment(`${formData.returnDate} ${formData.returnTime || "23:59"}`);
-             if (!start.isValid() || !end.isValid()) { errors.pickupDate = "Invalid date/time format"; }
-             else if (end.isBefore(start)) { errors.returnDate = "Return date/time must be after pickup"; }
-         }
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
-   };
+  const validateForm = () => {
+    // ... (validation logic - no changes needed here) ...
+    const errors = {};
+    if (!formData.name.trim()) errors.name = "Name is required";
+    if (!formData.email.trim()) errors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      errors.email = "Email is invalid";
+    if (!formData.phone.trim()) errors.phone = "Phone number is required";
+    if (!formData.pickupDate) errors.pickupDate = "Pickup date is required";
+    if (!formData.pickupTime) errors.pickupTime = "Pickup time is required";
+    if (!formData.returnDate) errors.returnDate = "Return date is required";
+    if (!formData.returnTime) errors.returnTime = "Return time is required";
+    if (!formData.pickupPoint.trim())
+      errors.pickupPoint = "Pickup point is required";
+    if (!formData.returnPoint.trim())
+      errors.returnPoint = "Return point is required";
+    if (formData.numTourists < 1) errors.numTourists = "At least 1 tourist";
+    if (formData.pickupDate && formData.returnDate) {
+      const start = moment(
+        `${formData.pickupDate} ${formData.pickupTime || "00:00"}`
+      );
+      const end = moment(
+        `${formData.returnDate} ${formData.returnTime || "23:59"}`
+      );
+      if (!start.isValid() || !end.isValid()) {
+        errors.pickupDate = "Invalid date/time format";
+      } else if (end.isBefore(start)) {
+        errors.returnDate = "Return date/time must be after pickup";
+      }
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   // --- Handle Form Submit (Update to include userId) ---
   const handleSubmit = async (e) => {
@@ -121,10 +172,11 @@ const BookingPage = () => {
       setSubmitError("Vehicle details not loaded. Cannot submit booking.");
       return;
     }
-    if (!user) { // Ensure user is logged in before submitting
-        setSubmitError("You must be logged in to book.");
-        // Optionally redirect to login: navigate('/login', { state: { from: location } });
-        return;
+    if (!user) {
+      // Ensure user is logged in before submitting
+      setSubmitError("You must be logged in to book.");
+      // Optionally redirect to login: navigate('/login', { state: { from: location } });
+      return;
     }
 
     setLoading(true); // Use the general loading state for submission
@@ -137,7 +189,7 @@ const BookingPage = () => {
       vehicleBrand: vehicle.brand,
       vehicleModel: vehicle.model,
       totalPrice: totalPrice,
-      bookingStatus: 'pending',
+      bookingStatus: "pending",
     };
 
     try {
@@ -155,32 +207,41 @@ const BookingPage = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || `Booking failed: ${response.statusText}`);
+        throw new Error(
+          result.error || `Booking failed: ${response.statusText}`
+        );
       }
 
       console.log("Booking successful:", result);
-      navigate(`/booking-confirmation/${result._id}`, { state: { bookingDetails: result } });
-
+      navigate(`/booking-confirmation/${result._id}`, {
+        state: { bookingDetails: result },
+      });
     } catch (err) {
       console.error("Booking submission error:", err);
-      setSubmitError(err.message || "An unexpected error occurred during booking.");
-       setLoading(false); // Stop loading indicator on error
+      setSubmitError(
+        err.message || "An unexpected error occurred during booking."
+      );
+      setLoading(false); // Stop loading indicator on error
     }
-     // setLoading will be implicitly false on navigation success
+    // setLoading will be implicitly false on navigation success
   };
 
   // --- Render Logic ---
   // Add check for auth loading state if needed
-    // if (authLoading || (loading && !vehicle)) { ... }
+  // if (authLoading || (loading && !vehicle)) { ... }
 
-   if (loading && !vehicle) {
-        return ( <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+  if (loading && !vehicle) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
         Loading Vehicle Details...
-      </div>);
-    }
+      </div>
+    );
+  }
 
-   if (submitError && !vehicle) { // Error fetching vehicle initially
-        return ( <div className="min-h-screen bg-gray-900 text-white">
+  if (submitError && !vehicle) {
+    // Error fetching vehicle initially
+    return (
+      <div className="min-h-screen bg-gray-900 text-white">
         <Navbar />
         <div className="container mx-auto p-6 text-center">
           <h1 className="text-2xl text-red-500">Error Loading Vehicle</h1>
@@ -193,8 +254,9 @@ const BookingPage = () => {
           </button>
         </div>
         <Footer />
-      </div> );
-   }
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -325,17 +387,266 @@ const BookingPage = () => {
 
           {/* --- Booking Details (No changes needed here) --- */}
           <fieldset className="mb-6 border border-gray-700 p-4 rounded-md">
-            {/* ... pickup/return points, dates, times ... */}
+            <legend className="text-xl font-semibold mb-4 px-2 text-gray-200">
+              Booking Details
+            </legend>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* Pickup Point */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaMapMarkerAlt className="mr-2" />
+                    Pickup Point<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="pickupPoint"
+                  value={formData.pickupPoint}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.pickupPoint
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.pickupPoint && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.pickupPoint}
+                  </p>
+                )}
+              </div>
+              {/* Return Point */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaMapMarkerAlt className="mr-2" />
+                    Return Point<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  name="returnPoint"
+                  value={formData.returnPoint}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.returnPoint
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.returnPoint && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.returnPoint}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Pickup Date */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaCalendarAlt className="mr-2" />
+                    Pickup Date<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="date"
+                  name="pickupDate"
+                  value={formData.pickupDate}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.pickupDate
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.pickupDate && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.pickupDate}
+                  </p>
+                )}
+              </div>
+              {/* Pickup Time */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaClock className="mr-2" />
+                    Pickup Time<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="time"
+                  name="pickupTime"
+                  value={formData.pickupTime}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.pickupTime
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.pickupTime && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.pickupTime}
+                  </p>
+                )}
+              </div>
+              {/* Return Date */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaCalendarAlt className="mr-2" />
+                    Return Date<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="date"
+                  name="returnDate"
+                  value={formData.returnDate}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.returnDate
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.returnDate && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.returnDate}
+                  </p>
+                )}
+              </div>
+              {/* Return Time */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaClock className="mr-2" />
+                    Return Time<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="time"
+                  name="returnTime"
+                  value={formData.returnTime}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.returnTime
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.returnTime && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.returnTime}
+                  </p>
+                )}
+              </div>
+            </div>
           </fieldset>
 
           {/* --- Options (No changes needed here) --- */}
           <fieldset className="mb-6 border border-gray-700 p-4 rounded-md">
-            {/* ... num tourists, driver option, special requests ... */}
+            <legend className="text-xl font-semibold mb-4 px-2 text-gray-200">
+              Options & Requests
+            </legend>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* Number of Tourists */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaUsers className="mr-2" />
+                    Number of Tourists
+                    <span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  name="numTourists"
+                  value={formData.numTourists}
+                  onChange={handleInputChange}
+                  min="1"
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
+                    formErrors.numTourists
+                      ? "border border-red-500"
+                      : "border border-gray-600"
+                  }`}
+                  required
+                />
+                {formErrors.numTourists && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.numTourists}
+                  </p>
+                )}
+              </div>
+              {/* Driver Option */}
+              <div>
+                <label className="block mb-1 text-gray-300">
+                  <span className="flex items-center">
+                    <FaCar className="mr-2" />
+                    Driver Option<span className="text-red-500 ml-1">*</span>
+                  </span>
+                </label>
+                <select
+                  name="driverOption"
+                  value={formData.driverOption}
+                  onChange={handleInputChange}
+                  className={`w-full p-3 bg-gray-700 rounded-lg text-white border ${
+                    formErrors.driverOption
+                      ? "border-red-500"
+                      : "border-gray-600"
+                  }`}
+                  required
+                >
+                  <option value="withDriver">With Driver</option>
+                  <option value="selfDrive">Self-Drive</option>
+                  {/* TODO: Potentially disable 'selfDrive' based on vehicle type or license requirements */}
+                </select>
+                {formErrors.driverOption && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.driverOption}
+                  </p>
+                )}
+              </div>
+            </div>
+            {/* Special Requests */}
+            <div>
+              <label className="block mb-1 text-gray-300">
+                <span className="flex items-center">
+                  <FaInfoCircle className="mr-2" />
+                  Special Requests (Optional)
+                </span>
+              </label>
+              <textarea
+                name="specialRequests"
+                rows="3"
+                value={formData.specialRequests}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600"
+                placeholder="e.g., Child seat needed, specific route preferences"
+              ></textarea>
+            </div>
           </fieldset>
 
           {/* --- Price & Submit --- */}
           <div className="mt-6 p-4 bg-gray-900 rounded-lg text-center">
-            {/* ... price display ... */}
+            <p className="text-2xl font-bold text-yellow-500 flex items-center justify-center">
+              <FaDollarSign className="mr-2" /> Estimated Total: $
+              {totalPrice.toFixed(2)}
+            </p>
+            {formData.driverOption === "withDriver" && (
+              <p className="text-sm text-gray-400 mt-1">
+                (Includes driver cost of ${DRIVER_COST_PER_DAY}/day)
+              </p>
+            )}
           </div>
 
           <button
