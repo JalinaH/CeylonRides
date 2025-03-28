@@ -1,67 +1,82 @@
+import vehicle from "../models/vehicle.js";
 import Booking from "../models/booking.js";
 
-// Create a new booking
 export const createBooking = async (req, res) => {
   try {
-    const booking = new Booking(req.body);
-    await booking.save();
-    res.status(201).json(booking);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+    const bookingData = req.body;
 
-// Get all bookings
-export const getAllBookings = async (req, res) => {
-  try {
-    const bookings = await Booking.find().populate(
-      "vehicleId driverId touristId"
+    // --- Server-Side Validation (Essential!) ---
+    if (
+      !bookingData.vehicleId ||
+      !bookingData.pickupDate ||
+      !bookingData.returnDate /* ... add all required fields */
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Missing required booking information." });
+    }
+
+    const startDate = moment(
+      `${bookingData.pickupDate} ${bookingData.pickupTime || "00:00"}`
     );
-    res.status(200).json(bookings);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Get a single booking by ID
-export const getBookingById = async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id).populate(
-      "vehicleId driverId touristId"
+    const endDate = moment(
+      `${bookingData.returnDate} ${bookingData.returnTime || "23:59"}`
     );
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
+
+    if (
+      !startDate.isValid() ||
+      !endDate.isValid() ||
+      endDate.isBefore(startDate)
+    ) {
+      return res.status(400).json({ error: "Invalid booking dates." });
     }
-    res.status(200).json(booking);
+
+    // --- Check Vehicle Availability (CRITICAL!) ---
+    const vehicle = await vehicle.findById(bookingData.vehicleId);
+    if (!vehicle) {
+      return res.status(404).json({ error: "Vehicle not found." });
+    }
+
+    const isAvailable = !vehicle.bookings.some((booking) => {
+      const bookingStart = moment(booking.startDate); // Assuming stored as full Date objects
+      const bookingEnd = moment(booking.endDate);
+      return startDate.isBefore(bookingEnd) && endDate.isAfter(bookingStart);
+    });
+
+    if (!isAvailable) {
+      return res
+        .status(409)
+        .json({ error: "Vehicle is not available for the selected dates." }); // 409 Conflict
+    }
+
+    // --- Create Booking ---
+    const newBooking = new Booking(bookingData);
+    const savedBooking = await newBooking.save();
+
+    // --- Update Vehicle's Bookings Array ---
+    vehicle.bookings.push({
+      startDate: startDate.toDate(), // Store as Date object
+      endDate: endDate.toDate(), // Store as Date object
+    });
+    await vehicle.save();
+
+    res.status(201).json(savedBooking); // Return the created booking
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error creating booking:", error);
+    // Mongoose validation error
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ error: error.message });
+    }
+    res
+      .status(500)
+      .json({
+        error: "Server error while creating booking.",
+        details: error.message,
+      });
   }
 };
 
-// Update a booking by ID
-export const updateBooking = async (req, res) => {
-  try {
-    const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    }).populate("vehicleId driverId touristId");
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
-    }
-    res.status(200).json(booking);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Delete a booking by ID
-export const deleteBooking = async (req, res) => {
-  try {
-    const booking = await Booking.findByIdAndDelete(req.params.id);
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
-    }
-    res.status(200).json({ message: "Booking deleted successfully" });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+// Add other controller functions (get bookings, get single booking, update status etc.) later
+// export const getAllBookings = ...
+// export const getBookingById = ...
+// export const updateBookingStatus = ...

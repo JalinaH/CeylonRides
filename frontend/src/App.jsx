@@ -1,30 +1,41 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './pages/Home/Home'
-import Login from './pages/Login/Login'
-import Register from './pages/Register/Register'
-import VehicleProfile from './pages/VehicleProfile/Vehicleprofile';
-import AvailableVehicles from './pages/AvailableVehicles/AvailableVehicles';
-import BookingPage from './pages/BookingPage/BookingPage';
-import BookingConfirmationPage from './pages/BookingConfirmationPage/BookingConfirmationPage';
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import VehicleProfile from "./pages/VehicleProfile/Vehicleprofile";
+import AvailableVehicles from "./pages/AvailableVehicles/AvailableVehicles";
+import BookingPage from "./pages/BookingPage/BookingPage";
+import BookingConfirmationPage from "./pages/BookingConfirmationPage/BookingConfirmationPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import RegisterPage from "./pages/Register/Register";
+import LoginPage from "./pages/Login/Login";
 
 function App() {
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/vehicles/:id" element={<VehicleProfile />} />
-        <Route path="/available-vehicles" element={<AvailableVehicles />} />
-        <Route path="/book-vehicle/:id" element={<BookingPage />} />
-        <Route
-          path="/booking-confirmation/:bookingId"
-          element={<BookingConfirmationPage />}
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/vehicles/:id" element={<VehicleProfile />} />
+      <Route path="/available-vehicles" element={<AvailableVehicles />} />
+      <Route
+        path="/book-vehicle/:id"
+        element={
+          <ProtectedRoute>
+            <BookingPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/booking-confirmation/:bookingId"
+        element={
+          <ProtectedRoute>
+            {" "}
+            {/* Also protect confirmation? */}
+            <BookingConfirmationPage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 
-export default App
+export default App;
