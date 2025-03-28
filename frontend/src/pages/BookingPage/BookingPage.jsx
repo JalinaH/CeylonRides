@@ -161,69 +161,49 @@ const BookingPage = () => {
   };
 
   // --- Handle Form Submit (Update to include userId) ---
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
+    // Make it non-async for now
     e.preventDefault();
     if (!validateForm()) {
       console.log("Form validation failed", formErrors);
+      // Optionally scroll to the first error
       return;
     }
 
+    // Ensure essential data is present before navigating
     if (!vehicle) {
-      setSubmitError("Vehicle details not loaded. Cannot submit booking.");
+      setSubmitError("Vehicle details not loaded. Cannot proceed.");
       return;
     }
     if (!user) {
-      // Ensure user is logged in before submitting
       setSubmitError("You must be logged in to book.");
-      // Optionally redirect to login: navigate('/login', { state: { from: location } });
+      // Consider redirecting to login if not logged in
+      // navigate('/login', { state: { from: location } });
       return;
     }
 
-    setLoading(true); // Use the general loading state for submission
+    // Clear any previous submission errors
     setSubmitError(null);
 
-    const bookingData = {
-      ...formData,
-      userId: user._id, // <<< Add the logged-in user's ID
+    // --- Prepare data to pass to confirmation page ---
+    const bookingDetailsToConfirm = {
+      ...formData, // User input
+      userId: user._id,
       vehicleId: vehicle._id,
       vehicleBrand: vehicle.brand,
       vehicleModel: vehicle.model,
-      totalPrice: totalPrice,
-      bookingStatus: "pending",
+      vehicleImage: vehicle.image, // Pass image for display
+      vehicleType: vehicle.type,
+      vehicleSeats: vehicle.seatingCapacity,
+      totalPrice: totalPrice, // Pass calculated price
     };
 
-    try {
-      const submitUrl = `/api/bookings`;
-      const response = await fetch(submitUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Include Authorization header if your booking endpoint requires it
-          // 'Authorization': `Bearer ${token}` // Get token from useAuth() if needed
-        },
-        body: JSON.stringify(bookingData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error || `Booking failed: ${response.statusText}`
-        );
-      }
-
-      console.log("Booking successful:", result);
-      navigate(`/booking-confirmation/${result._id}`, {
-        state: { bookingDetails: result },
-      });
-    } catch (err) {
-      console.error("Booking submission error:", err);
-      setSubmitError(
-        err.message || "An unexpected error occurred during booking."
-      );
-      setLoading(false); // Stop loading indicator on error
-    }
-    // setLoading will be implicitly false on navigation success
+    // --- Navigate to Confirmation Page ---
+    // Pass the prepared data using location state
+    navigate(`/booking-confirmation`, {
+      // Use a generic path for confirmation
+      state: { bookingData: bookingDetailsToConfirm },
+    });
   };
 
   // --- Render Logic ---

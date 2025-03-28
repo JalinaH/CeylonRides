@@ -22,7 +22,7 @@ app.use(express.json());
 // Routes
 app.use("/api", vehicleRoutes);
 app.use("/api", driverRoutes);
-app.use("/api", bookingRoutes);
+app.use("/api/bookings", bookingRoutes);
 app.use("/api", userRoutes);
 
 const PORT = process.env.PORT || 5001;

@@ -25,11 +25,9 @@ function App() {
         }
       />
       <Route
-        path="/booking-confirmation/:bookingId"
+        path="/booking-confirmation"
         element={
           <ProtectedRoute>
-            {" "}
-            {/* Also protect confirmation? */}
             <BookingConfirmationPage />
           </ProtectedRoute>
         }
