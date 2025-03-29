@@ -61,6 +61,9 @@ const Navbar = () => {
                 Vehicles
               </NavLink>
               {/* Separator or adjust spacing */}
+              <NavLink to="/contact" className={navLinkClasses}>
+                Contact Us
+              </NavLink>
               <div className="flex items-center space-x-2 pl-4 border-l border-gray-700">
                 <NavLink to="/login" className={navLinkClasses}>
                   Login

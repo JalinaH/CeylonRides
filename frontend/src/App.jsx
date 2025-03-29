@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import RegisterPage from "./pages/Register/Register";
 import LoginPage from "./pages/Login/Login";
 import MyBookingsPage from "./pages/MyBookings/MyBookingsPage";
+import ContactPage from "./pages/Contact/ContactPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/vehicles/:id" element={<VehicleProfile />} />
       <Route path="/available-vehicles" element={<AvailableVehicles />} />
+      <Route path="/contact" element={<ContactPage />} />
       <Route
         path="/book-vehicle/:id"
         element={
