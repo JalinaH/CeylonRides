@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   FaStar,
   FaMapMarkerAlt,
@@ -8,11 +8,45 @@ import {
   FaCar,
   FaUsers,
   FaCalendarAlt,
+  FaBusAlt,
+  FaMotorcycle,
+  FaTruckMoving,
 } from "react-icons/fa";
 import CustomerReviewsSection from "../../components/CustomerReviewsSection";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import VehicleBookingForm from "../../components/VehicleBookingForm";
+
+const vehicleCategories = [
+  {
+    name: "Cars",
+    type: "Car",
+    icon: FaCar,
+    image:
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+  }, // Replace with relevant images
+  {
+    name: "Vans",
+    type: "Van",
+    icon: FaBusAlt,
+    image:
+      "https://images.unsplash.com/photo-1606505719100-7695a1cf4a9e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+  },
+  {
+    name: "SUVs",
+    type: "SUV",
+    icon: FaTruckMoving,
+    image:
+      "https://images.unsplash.com/photo-1588811690044-5a92863b1385?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+  },
+  {
+    name: "Scooters",
+    type: "Scooter",
+    icon: FaMotorcycle,
+    image:
+      "https://images.unsplash.com/photo-1593672598113-49521a2a4b9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1025&q=80",
+  },
+];
 
 const Home = () => {
   const navigate = useNavigate();
@@ -55,6 +89,39 @@ const Home = () => {
           </h1>
 
           <VehicleBookingForm onSubmit={handleFormSubmit} />
+        </div>
+
+        <div className="py-16 px-6 md:px-12 lg:px-24">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold mb-12 text-center">
+              Browse by <span className="text-yellow-500">Vehicle Type</span>
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {vehicleCategories.map((category) => (
+                <Link
+                  key={category.type}
+                  to={`/available-vehicles?vehicleType=${encodeURIComponent(
+                    category.type
+                  )}`}
+                  className="block bg-gray-800 bg-opacity-70 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group"
+                >
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" // Zoom effect on hover
+                    />
+                  </div>
+                  <div className="p-5 text-center">
+                    <category.icon className="text-yellow-500 text-3xl mx-auto mb-3" />
+                    <h3 className="text-xl font-semibold text-white">
+                      {category.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="py-16 px-6 md:px-12 lg:px-24 bg-gray-800 bg-opacity-60">
