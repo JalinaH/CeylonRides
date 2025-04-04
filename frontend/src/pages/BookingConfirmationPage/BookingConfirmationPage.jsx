@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { useAuth } from "../../context/AuthContext"; // Needed for potential token
+import { useAuth } from "../../context/AuthContext"; 
 import moment from "moment";
 import {
   FaUser,
@@ -22,27 +22,25 @@ import {
 const BookingConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { token } = useAuth(); // Get token if needed for API call
+  const { token } = useAuth(); 
 
-  // State for the component
   const [bookingData, setBookingData] = useState(
     location.state?.bookingData || null
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [finalBookingId, setFinalBookingId] = useState(null); // Store ID after successful booking
+  const [finalBookingId, setFinalBookingId] = useState(null); 
 
-  // Redirect if booking data is missing (e.g., direct navigation)
   useEffect(() => {
     if (!bookingData) {
       console.error("Booking data missing. Redirecting...");
-      navigate("/"); // Redirect to home or booking page
+      navigate("/");
     }
   }, [bookingData, navigate]);
 
   const handleConfirmBooking = async () => {
-    if (!bookingData || success) return; // Prevent double submission
+    if (!bookingData || success) return; 
 
     setIsLoading(true);
     setError(null);
@@ -53,11 +51,7 @@ const BookingConfirmationPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Include Authorization header if your booking endpoint requires it
-          // 'Authorization': `Bearer ${token}`
         },
-        // Send only the data the backend endpoint expects
-        // (The backend 'createBooking' expects data matching the Booking model)
         body: JSON.stringify({
           userId: bookingData.userId,
           vehicleId: bookingData.vehicleId,
@@ -74,16 +68,14 @@ const BookingConfirmationPage = () => {
           driverOption: bookingData.driverOption,
           specialRequests: bookingData.specialRequests,
           totalPrice: bookingData.totalPrice,
-          vehicleBrand: bookingData.vehicleBrand, // Denormalized info
-          vehicleModel: bookingData.vehicleModel, // Denormalized info
-          // Backend sets bookingStatus to 'pending' by default
+          vehicleBrand: bookingData.vehicleBrand, 
+          vehicleModel: bookingData.vehicleModel, 
         }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        // Handle specific errors like unavailability (409 Conflict)
         if (response.status === 409) {
           throw new Error(
             result.error ||
@@ -95,27 +87,23 @@ const BookingConfirmationPage = () => {
         );
       }
 
-      // --- Success ---
       console.log("Booking Confirmed and Saved:", result);
       setSuccess(true);
-      setFinalBookingId(result._id); // Store the actual booking ID
+      setFinalBookingId(result._id); 
 
-      // Optional: Redirect after a short delay
       setTimeout(() => {
-        navigate("/"); // Redirect to home page
-      }, 4000); // 4-second delay
+        navigate("/"); 
+      }, 4000); 
     } catch (err) {
       console.error("Booking confirmation error:", err);
       setError(
         err.message ||
           "An unexpected error occurred while confirming the booking."
       );
-      setIsLoading(false); // Stop loading indicator on error
+      setIsLoading(false); 
     }
-    // No need to set isLoading to false on success because we show success message
   };
 
-  // Render loading state or error if data is missing initially
   if (!bookingData && !error) {
     return (
       <div className="min-h-screen bg-gray-900 text-white">
@@ -133,9 +121,7 @@ const BookingConfirmationPage = () => {
       <Navbar />
       <div className="container mx-auto p-6 max-w-3xl">
         {" "}
-        {/* Adjusted max width */}
         {success ? (
-          // --- Success Message ---
           <div className="bg-green-800 bg-opacity-90 p-8 rounded-lg shadow-lg text-center">
             <FaCheckCircle className="text-5xl text-green-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">
@@ -163,7 +149,6 @@ const BookingConfirmationPage = () => {
             <p className="text-sm text-gray-400">Redirecting to homepage...</p>
           </div>
         ) : (
-          // --- Confirmation Details ---
           <div className="bg-gray-800 bg-opacity-90 p-8 rounded-lg shadow-lg">
             <h1 className="text-3xl font-bold mb-6 text-center text-yellow-500">
               Confirm Your Booking
@@ -175,7 +160,6 @@ const BookingConfirmationPage = () => {
               </div>
             )}
 
-            {/* Vehicle Summary */}
             <div className="mb-6 border-b border-gray-700 pb-4 flex items-center gap-4">
               <img
                 src={
@@ -194,7 +178,6 @@ const BookingConfirmationPage = () => {
               </div>
             </div>
 
-            {/* Booking Details Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6 text-gray-300">
               <div className="flex items-center">
                 <FaUser className="mr-3 text-yellow-500" />{" "}
@@ -247,7 +230,6 @@ const BookingConfirmationPage = () => {
               )}
             </div>
 
-            {/* Price Summary */}
             <div className="mt-6 p-4 bg-gray-900 rounded-lg text-center mb-8">
               <p className="text-2xl font-bold text-yellow-500 flex items-center justify-center">
                 <FaDollarSign className="mr-2" /> Estimated Total: $
@@ -260,10 +242,9 @@ const BookingConfirmationPage = () => {
               )}
             </div>
 
-            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button
-                onClick={() => navigate(-1)} // Go back to the previous page (booking form)
+                onClick={() => navigate(-1)} 
                 disabled={isLoading}
                 className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
               >

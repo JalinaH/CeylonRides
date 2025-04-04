@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import VehicleProfile from "./pages/VehicleProfile/Vehicleprofile";
 import AvailableVehicles from "./pages/AvailableVehicles/AvailableVehicles";
@@ -9,8 +9,14 @@ import RegisterPage from "./pages/Register/Register";
 import LoginPage from "./pages/Login/Login";
 import MyBookingsPage from "./pages/MyBookings/MyBookingsPage";
 import ContactPage from "./pages/Contact/ContactPage";
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import AdminUserList from "./pages/Admin/AdminUserList";
+import AdminProtectedRoute from "./components/Admin/AdminProtectedRoutes";
+import AdminLayout from "./components/Admin/AdminLayout";
 
 function App() {
+  const isAdminRoute = window.location.pathname.startsWith("/admin");
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -43,6 +49,18 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin"
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout />
+          </AdminProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="users" element={<AdminUserList />} />
+      </Route>
     </Routes>
   );
 }
