@@ -13,6 +13,8 @@ import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminUserList from "./pages/Admin/AdminUserList";
 import AdminProtectedRoute from "./components/Admin/AdminProtectedRoutes";
 import AdminLayout from "./components/Admin/AdminLayout";
+import AdminVehicleList from "./pages/Admin/AdminVehicleList";
+import AdminBookingList from "./pages/Admin/AdminBookingList";
 
 function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
@@ -60,6 +62,8 @@ function App() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="users" element={<AdminUserList />} />
+        <Route path="vehicles" element={<AdminVehicleList />} />
+        <Route path="bookings" element={<AdminBookingList />} />
       </Route>
     </Routes>
   );
