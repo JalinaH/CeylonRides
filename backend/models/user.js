@@ -18,7 +18,35 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
+      enum: ["tourist", "driver", "admin"],
       default: "tourist",
+    },
+    phone: { type: String, trim: true },
+    licenseNumber: {
+      type: String,
+      trim: true,
+    },
+    licenseExpiry: {
+      type: Date,
+    },
+    experienceYears: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+    languages: {
+      type: [String],
+      default: [],
+    },
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    totalRatings: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -26,7 +54,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash the password before saving the user
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
