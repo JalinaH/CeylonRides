@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext(null);
 
-// Define API base URL (adjust if needed)
-const API_URL = "/api"; // Use relative path if proxy is configured
-// const API_URL = 'http://localhost:5001/api'; // Use full path otherwise
+const API_URL = "/api";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

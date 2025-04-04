@@ -15,13 +15,11 @@ const VehicleProfile = () => {
   const [availability, setAvailability] = useState([]);
 
   useEffect(() => {
-    // Fetch vehicle details
     fetch(`http://localhost:5001/api/vehicles/${id}`)
       .then((response) => response.json())
       .then((data) => setVehicle(data))
       .catch((error) => console.error("Error fetching vehicle:", error));
 
-    // Fetch vehicle availability
     fetch(`http://localhost:5001/api/vehicles/${id}/availability`)
       .then((response) => response.json())
       .then((data) => setAvailability(data))
@@ -29,7 +27,7 @@ const VehicleProfile = () => {
   }, [id]);
 
   const handleBookNow = () => {
-    navigate(`/book-vehicle/${id}`); // Navigate to the booking page
+    navigate(`/book-vehicle/${id}`);
   };
 
   if (!vehicle) {
@@ -44,7 +42,6 @@ const VehicleProfile = () => {
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
       <div className="container mx-auto p-6">
-        {/* Vehicle Details Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
           <h1 className="text-3xl font-bold mb-4">
             {vehicle.brand} {vehicle.model}
@@ -87,7 +84,6 @@ const VehicleProfile = () => {
           </button>
         </div>
 
-        {/* Availability Calendar Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4">Availability Calendar</h2>
           <div className="bg-gray-700 p-4 rounded-lg">
@@ -99,13 +95,12 @@ const VehicleProfile = () => {
               style={{ height: 500 }}
               eventPropGetter={(event) => ({
                 style: {
-                  backgroundColor: "#FCD34D", // Lighter yellow for occupied dates
+                  backgroundColor: "#FCD34D",
                   borderRadius: "4px",
                   border: "none",
-                  color: "#1F2937", // Dark text for better contrast
+                  color: "#1F2937",
                 },
               })}
-              // Customize the calendar colors
               components={{
                 toolbar: (props) => (
                   <div className="flex justify-between items-center mb-4">
@@ -125,10 +120,8 @@ const VehicleProfile = () => {
                   </div>
                 ),
               }}
-              // Customize the calendar header
               views={["month", "week", "day"]}
               defaultView="month"
-              // Customize the calendar colors
               className="custom-calendar"
             />
           </div>
