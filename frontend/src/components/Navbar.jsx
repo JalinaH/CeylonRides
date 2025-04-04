@@ -1,5 +1,4 @@
-// src/components/Navbar.jsx
-import React, { useState } from "react"; // Added useState for dropdown
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -9,11 +8,12 @@ import {
   FaBusAlt,
   FaMotorcycle,
   FaTruckMoving,
-} from "react-icons/fa"; // Added icons
+  FaTachometerAlt,
+} from "react-icons/fa";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const [isVehicleDropdownOpen, setIsVehicleDropdownOpen] = useState(false); // State for dropdown
+  const [isVehicleDropdownOpen, setIsVehicleDropdownOpen] = useState(false);
 
   const navLinkClasses = ({ isActive }) =>
     `px-3 py-1 rounded transition ${
@@ -22,13 +22,18 @@ const Navbar = () => {
         : "text-white hover:text-yellow-400"
     }`;
 
-  // Define vehicle categories and their icons/links
+  const adminLinkClasses = ({ isActive }) =>
+    `px-3 py-1 rounded transition ${
+      isActive
+        ? "text-yellow-400 font-semibold border border-yellow-500" // Example distinct style
+        : "text-gray-300 hover:text-yellow-400"
+    }`;
+
   const vehicleCategories = [
     { name: "Cars", type: "Car", icon: FaCar },
-    { name: "Vans", type: "Van", icon: FaBusAlt }, // Using FaBusAlt for Van
-    { name: "SUVs", type: "SUV", icon: FaTruckMoving }, // Example icon
+    { name: "Vans", type: "Van", icon: FaBusAlt },
+    { name: "SUVs", type: "SUV", icon: FaTruckMoving },
     { name: "Scooters", type: "Scooter", icon: FaMotorcycle },
-    // Add more categories as needed
   ];
 
   return (
@@ -38,17 +43,16 @@ const Navbar = () => {
           <span className="text-yellow-500">Ceylon</span>Rides
         </Link>
         <div className="flex items-center space-x-4">
-          <NavLink to="/" className={navLinkClasses}>
+          <NavLink to="/" className={navLinkClasses} end>
             Home
           </NavLink>
 
-          {/* --- Vehicle Category Dropdown --- */}
           <div className="relative">
             <button
               onClick={() => setIsVehicleDropdownOpen(!isVehicleDropdownOpen)}
               onBlur={() =>
                 setTimeout(() => setIsVehicleDropdownOpen(false), 150)
-              } // Close on blur with delay
+              }
               className="flex items-center px-3 py-1 rounded transition text-white hover:text-yellow-400 focus:outline-none"
             >
               Vehicles
@@ -60,16 +64,15 @@ const Navbar = () => {
               />
             </button>
             {isVehicleDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
+              <div className="absolute left-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
                 <Link
-                  to="/available-vehicles" // Link to show ALL vehicles
+                  to="/available-vehicles"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-yellow-400"
                   onClick={() => setIsVehicleDropdownOpen(false)}
                 >
                   All Vehicles
                 </Link>
                 <div className="border-t border-gray-700 my-1"></div>{" "}
-                {/* Separator */}
                 {vehicleCategories.map((category) => (
                   <Link
                     key={category.type}
@@ -85,11 +88,18 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          {/* --- End Vehicle Category Dropdown --- */}
 
           {user ? (
-            // --- Logged In View ---
             <>
+              {user.role === "admin" && (
+                <NavLink
+                  to="/admin/dashboard"
+                  className={adminLinkClasses}
+                  title="Admin Dashboard"
+                >
+                  <FaTachometerAlt className="mr-1 inline" /> Admin
+                </NavLink>
+              )}
               <NavLink to="/manage-bookings" className={navLinkClasses}>
                 My Bookings
               </NavLink>
@@ -105,7 +115,6 @@ const Navbar = () => {
               </div>
             </>
           ) : (
-            // --- Logged Out View ---
             <>
               <div className="flex items-center space-x-2 pl-4 border-l border-gray-700">
                 <NavLink to="/login" className={navLinkClasses}>
