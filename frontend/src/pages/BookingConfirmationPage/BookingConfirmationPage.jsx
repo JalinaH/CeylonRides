@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { useAuth } from "../../context/AuthContext"; 
+import { useAuth } from "../../context/AuthContext";
 import moment from "moment";
 import {
   FaUser,
@@ -22,7 +22,7 @@ import {
 const BookingConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { token } = useAuth(); 
+  const { token } = useAuth();
 
   const [bookingData, setBookingData] = useState(
     location.state?.bookingData || null
@@ -30,7 +30,7 @@ const BookingConfirmationPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [finalBookingId, setFinalBookingId] = useState(null); 
+  const [finalBookingId, setFinalBookingId] = useState(null);
 
   useEffect(() => {
     if (!bookingData) {
@@ -40,7 +40,13 @@ const BookingConfirmationPage = () => {
   }, [bookingData, navigate]);
 
   const handleConfirmBooking = async () => {
-    if (!bookingData || success) return; 
+    if (!bookingData || success) return;
+
+    if (!token) {
+      setError("Authentication error. Please log in again.");
+      setIsLoading(false);
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -50,6 +56,7 @@ const BookingConfirmationPage = () => {
       const response = await fetch(submitUrl, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -68,8 +75,8 @@ const BookingConfirmationPage = () => {
           driverOption: bookingData.driverOption,
           specialRequests: bookingData.specialRequests,
           totalPrice: bookingData.totalPrice,
-          vehicleBrand: bookingData.vehicleBrand, 
-          vehicleModel: bookingData.vehicleModel, 
+          vehicleBrand: bookingData.vehicleBrand,
+          vehicleModel: bookingData.vehicleModel,
         }),
       });
 
@@ -89,18 +96,18 @@ const BookingConfirmationPage = () => {
 
       console.log("Booking Confirmed and Saved:", result);
       setSuccess(true);
-      setFinalBookingId(result._id); 
+      setFinalBookingId(result._id);
 
       setTimeout(() => {
-        navigate("/"); 
-      }, 4000); 
+        navigate("/");
+      }, 4000);
     } catch (err) {
       console.error("Booking confirmation error:", err);
       setError(
         err.message ||
           "An unexpected error occurred while confirming the booking."
       );
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -244,7 +251,7 @@ const BookingConfirmationPage = () => {
 
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button
-                onClick={() => navigate(-1)} 
+                onClick={() => navigate(-1)}
                 disabled={isLoading}
                 className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
               >
