@@ -25,7 +25,7 @@ const Navbar = () => {
   const adminLinkClasses = ({ isActive }) =>
     `px-3 py-1 rounded transition ${
       isActive
-        ? "text-yellow-400 font-semibold border border-yellow-500" // Example distinct style
+        ? "text-yellow-400 font-semibold border border-yellow-500" 
         : "text-gray-300 hover:text-yellow-400"
     }`;
 

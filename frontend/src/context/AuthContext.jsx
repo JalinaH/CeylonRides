@@ -8,10 +8,9 @@ const API_URL = "/api";
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("authToken") || null);
-  const [loading, setLoading] = useState(true); // Check initial auth status
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Effect to load user data if token exists on initial load
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("authUser");
@@ -28,7 +27,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("authUser");
       }
     }
-    setLoading(false); // Finished initial loading
+    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
@@ -46,11 +45,10 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.error || "Login failed");
       }
 
-      // IMPORTANT: Backend sends back { token, user }
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem("authToken", data.token);
-      localStorage.setItem("authUser", JSON.stringify(data.user)); // Store user object
+      localStorage.setItem("authUser", JSON.stringify(data.user));
       console.log("Login successful", data.user);
       setLoading(false);
       return { success: true };
@@ -61,26 +59,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (username, email, password) => {
+  const register = async (registrationData) => {
     setLoading(true);
     try {
       const response = await fetch(`${API_URL}/users`, {
-        // Assuming POST /api/users is for registration
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify(registrationData),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 400 && data.details) {
+          throw new Error(`Validation failed: ${data.details.join(", ")}`);
+        }
         throw new Error(data.error || "Registration failed");
       }
 
       console.log("Registration successful", data);
       setLoading(false);
-      // Optionally log the user in directly after registration
-      // await login(email, password);
       return { success: true };
     } catch (error) {
       console.error("Registration error:", error);
@@ -95,13 +93,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
     console.log("User logged out");
-    navigate("/"); // Navigate to home page after logout
+    navigate("/");
   };
 
   const authContextValue = {
     user,
     token,
-    loading, // Provide loading state
+    loading,
     login,
     register,
     logout,
@@ -114,7 +112,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom hook for easy context consumption
 export const useAuth = () => {
   const context = React.useContext(AuthContext);
   if (context === undefined) {

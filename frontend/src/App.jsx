@@ -5,7 +5,6 @@ import AvailableVehicles from "./pages/AvailableVehicles/AvailableVehicles";
 import BookingPage from "./pages/BookingPage/BookingPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage/BookingConfirmationPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import RegisterPage from "./pages/Register/Register";
 import LoginPage from "./pages/Login/Login";
 import MyBookingsPage from "./pages/MyBookings/MyBookingsPage";
 import ContactPage from "./pages/Contact/ContactPage";
@@ -18,6 +17,8 @@ import AdminBookingList from "./pages/Admin/AdminBookingList";
 import DriverLayout from "./components/Driver/DriverLayout";
 import DriverProtectedRoute from "./components/Driver/DriverProtectedRoutes";
 import DriverBookingsPage from "./pages/Driver/DriverBookingPage";
+import RegisterFormPage from "./pages/Auth/RegisterFormPage";
+import RegisterTypeSelection from "./pages/Auth/RegisterTypeSelectionPage";
 
 function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
@@ -26,7 +27,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register" element={<RegisterTypeSelection />} />
+      <Route path="/register/details" element={<RegisterFormPage />} />
       <Route path="/vehicles/:id" element={<VehicleProfile />} />
       <Route path="/available-vehicles" element={<AvailableVehicles />} />
       <Route path="/contact" element={<ContactPage />} />
