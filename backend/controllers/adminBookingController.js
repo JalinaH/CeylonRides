@@ -41,6 +41,20 @@ export const adminUpdateBooking = async (req, res) => {
     return res.status(400).json({ error: "New status is required." });
   }
 
+  if (status === "confirmed" && !driverId) {
+    const tempBooking = await Booking.findById(bookingId).select(
+      "driverOption"
+    );
+    if (tempBooking && tempBooking.driverOption === "withDriver") {
+      console.warn(
+        `Attempted to confirm booking ${bookingId} without assigning a driver.`
+      );
+      return res
+        .status(400)
+        .json({ error: "Please assign a driver before confirming." });
+    }
+  }
+
   try {
     const booking = await Booking.findById(bookingId);
     if (!booking) {
@@ -56,24 +70,39 @@ export const adminUpdateBooking = async (req, res) => {
       }
       booking.driverId = driverId;
       console.log(`Assigned driver ${driverId} to booking ${bookingId}`);
+    } else if (
+      status === "confirmed" &&
+      booking.driverOption === "withDriver"
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Driver ID missing for confirmation." });
+    } else {
+      if (status === "cancelled" || status === "pending") {
+        booking.driverId = null;
+      }
     }
 
     booking.bookingStatus = status;
 
-    if (status === "confirmed") {
+    if (status === "confirmed" && booking.vehicleId && booking.driverId) {
       console.log(
-        `Booking ${bookingId} confirmed. Vehicle availability update needed.`
+        `Booking ${bookingId} confirmed. Need to update vehicle ${booking.vehicleId} availability.`
       );
     }
 
     const updatedBooking = await booking.save();
+    console.log(`Booking ${bookingId} updated successfully.`);
 
     res.status(200).json({
       message: "Booking updated successfully.",
       booking: updatedBooking,
     });
   } catch (error) {
-    console.error("Admin Update Booking Error:", error);
+    console.error(`Admin Update Booking Error for ${bookingId}:`, error);
+    if (error.name === "CastError") {
+      return res.status(400).json({ error: "Invalid ID format." });
+    }
     res.status(500).json({
       error: "Server error updating booking.",
       details: error.message,

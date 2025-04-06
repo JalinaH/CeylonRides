@@ -1,8 +1,7 @@
-// src/pages/Admin/AdminBookingList.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import moment from "moment";
-import { FaSpinner, FaExclamationCircle, FaEdit } from "react-icons/fa";
+import { FaSpinner, FaExclamationCircle, FaUserEdit } from "react-icons/fa";
 
 const AdminBookingList = () => {
   const [bookings, setBookings] = useState([]);

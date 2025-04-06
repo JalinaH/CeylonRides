@@ -8,6 +8,7 @@ import contactRoutes from "./routes/contactRoutes.js";
 import adminUserRoutes from "./routes/adminUserRoutes.js";
 import adminBookingRoutes from "./routes/adminBookingRoutes.js";
 import adminVehicleRoutes from "./routes/adminVehiclesRoutes.js";
+import driverAdminRoutes from "./routes/adminDriverRoutes.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -29,6 +30,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/admin", adminBookingRoutes);
 app.use("/api/admin", adminVehicleRoutes);
+app.use("/api/admin", driverAdminRoutes);
 app.use("/api/drivers", driverRoutes);
 
 const PORT = process.env.PORT || 5001;
