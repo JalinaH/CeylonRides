@@ -1,12 +1,17 @@
 import express from "express";
-import * as driverController from "../controllers/driverController.js";
+import {
+  getDriverBookings,
+  driverUpdateBookingStatus,
+  getDriverProfile,
+} from "../controllers/driverController.js";
+import { verifyDriver } from "../utils/verifyToken.js";
 
 const router = express.Router();
 
-router.post("/drivers", driverController.createDriver);
-router.get("/drivers", driverController.getAllDrivers);
-router.get("/drivers/:id", driverController.getDriverById);
-router.put("/drivers/:id", driverController.updateDriver);
-router.delete("/drivers/:id", driverController.deleteDriver);
+router.get("/my-bookings", verifyDriver, getDriverBookings);
+
+router.patch("/bookings/:id/status", verifyDriver, driverUpdateBookingStatus);
+
+router.get("/profile", verifyDriver, getDriverProfile);
 
 export default router;

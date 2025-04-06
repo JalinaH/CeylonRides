@@ -51,3 +51,26 @@ export const verifyAdmin = async (req, res, next) => {
     }
   });
 };
+
+export const verifyDriver = async (req, res, next) => {
+  verifyToken(req, res, async () => {
+    try {
+      const user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found." });
+      }
+      if (user.role === "driver" || user.role === "admin") {
+        next();
+      } else {
+        return res
+          .status(403)
+          .json({ error: "Forbidden: Driver access required." });
+      }
+    } catch (error) {
+      console.error("Driver verification DB error:", error);
+      return res
+        .status(500)
+        .json({ error: "Server error during driver verification." });
+    }
+  });
+};

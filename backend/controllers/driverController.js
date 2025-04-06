@@ -1,65 +1,93 @@
-import Driver from "../models/driver.js";
+import Booking from "../models/booking.js";
+import User from "../models/user.js";
+import moment from "moment";
 
-// Create a new driver
-export const createDriver = async (req, res) => {
+export const getDriverBookings = async (req, res) => {
+  const driverId = req.userId;
+
   try {
-    const driver = new Driver(req.body);
-    await driver.save();
-    res.status(201).json(driver);
+    const bookings = await Booking.find({
+      driverId: driverId,
+      bookingStatus: { $in: ["confirmed", "picked_up", "en_route"] },
+    })
+      .populate("vehicleId", "brand model type image")
+      .populate("userId", "username email phone")
+      .sort({ pickupDate: 1 });
+
+    res.status(200).json(bookings);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error fetching driver bookings:", error);
+    res.status(500).json({
+      error: "Server error fetching assigned bookings.",
+      details: error.message,
+    });
   }
 };
 
-// Get all drivers
-export const getAllDrivers = async (req, res) => {
-  try {
-    const drivers = await Driver.find().populate("assignedVehicle");
-    res.status(200).json(drivers);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+export const driverUpdateBookingStatus = async (req, res) => {
+  const driverId = req.userId;
+  const bookingId = req.params.id;
+  const { status } = req.body;
 
-// Get a single driver by ID
-export const getDriverById = async (req, res) => {
+  const allowedStatuses = ["picked_up", "en_route", "completed", "cancelled"];
+
+  if (!status || !allowedStatuses.includes(status)) {
+    return res.status(400).json({
+      error: `Invalid status provided. Allowed: ${allowedStatuses.join(", ")}`,
+    });
+  }
+
   try {
-    const driver = await Driver.findById(req.params.id).populate(
-      "assignedVehicle"
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found." });
+    }
+
+    if (booking.driverId?.toString() !== driverId) {
+      console.warn(
+        `Driver ${driverId} attempted to update booking ${bookingId} not assigned to them.`
+      );
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You are not assigned to this booking." });
+    }
+
+    booking.bookingStatus = status;
+    await booking.save();
+
+    res
+      .status(200)
+      .json({ message: `Booking status updated to ${status}`, booking });
+  } catch (error) {
+    console.error(
+      `Error updating booking status by driver ${driverId}:`,
+      error
     );
-    if (!driver) {
-      return res.status(404).json({ error: "Driver not found" });
+    if (error.name === "CastError") {
+      // Handle invalid bookingId format
+      return res.status(400).json({ error: "Invalid booking ID format." });
     }
-    res.status(200).json(driver);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({
+      error: "Server error updating booking status.",
+      details: error.message,
+    });
   }
 };
 
-// Update a driver by ID
-export const updateDriver = async (req, res) => {
+export const getDriverProfile = async (req, res) => {
+  const driverId = req.userId;
   try {
-    const driver = await Driver.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    }).populate("assignedVehicle");
-    if (!driver) {
-      return res.status(404).json({ error: "Driver not found" });
+    const driver = await User.findById(driverId, "-password");
+    if (!driver || driver.role !== "driver") {
+      return res.status(404).json({ error: "Driver profile not found." });
     }
     res.status(200).json(driver);
   } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Delete a driver by ID
-export const deleteDriver = async (req, res) => {
-  try {
-    const driver = await Driver.findByIdAndDelete(req.params.id);
-    if (!driver) {
-      return res.status(404).json({ error: "Driver not found" });
-    }
-    res.status(200).json({ message: "Driver deleted successfully" });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error fetching driver profile:", error);
+    res.status(500).json({
+      error: "Server error fetching profile.",
+      details: error.message,
+    });
   }
 };

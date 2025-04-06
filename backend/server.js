@@ -29,6 +29,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/admin", adminBookingRoutes);
 app.use("/api/admin", adminVehicleRoutes);
+app.use("/api/drivers", driverRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

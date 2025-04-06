@@ -5,8 +5,8 @@ const bookingSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      default: null,
-    }, 
+      required: true,
+    },
     vehicleId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vehicle",
@@ -16,9 +16,9 @@ const bookingSchema = new mongoose.Schema(
     email: { type: String, required: true },
     phone: { type: String, required: true },
     pickupDate: { type: Date, required: true },
-    pickupTime: { type: String, required: true }, // Store as string HH:MM
+    pickupTime: { type: String, required: true },
     returnDate: { type: Date, required: true },
-    returnTime: { type: String, required: true }, // Store as string HH:MM
+    returnTime: { type: String, required: true },
     pickupPoint: { type: String, required: true },
     returnPoint: { type: String, required: true },
     numTourists: { type: Number, required: true, min: 1 },
@@ -31,13 +31,25 @@ const bookingSchema = new mongoose.Schema(
     totalPrice: { type: Number, required: true },
     bookingStatus: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled", "completed"],
+      enum: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "picked_up",
+        "en_route",
+      ],
       default: "pending",
     },
-    vehicleBrand: String, // Denormalized for easy display
-    vehicleModel: String, // Denormalized for easy display
+    vehicleBrand: String,
+    vehicleModel: String,
+    driverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { timestamps: true }
-); // Adds createdAt and updatedAt
+);
 
 export default mongoose.model("Booking", bookingSchema);
