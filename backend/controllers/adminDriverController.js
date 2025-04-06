@@ -1,5 +1,5 @@
-import User from "../../models/user.js";
-import Booking from "../../models/booking.js";
+import User from "../models/user.js";
+import Booking from "../models/booking.js";
 import moment from "moment";
 
 export const getAvailableDrivers = async (req, res) => {

@@ -12,6 +12,10 @@ export const adminGetAllBookings = async (req, res) => {
         path: "vehicleId",
         select: "brand model type",
       })
+      .populate({
+        path: "driverId",
+        select: "username",
+      })
       .sort({ createdAt: -1 });
 
     console.log(`Found ${bookings.length} bookings.`);

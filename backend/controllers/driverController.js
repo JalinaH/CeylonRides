@@ -1,7 +1,5 @@
 import Booking from "../models/booking.js";
-import User from "../models/user.js";
-import moment from "moment";
-
+import User from "../models/user.js"
 export const getDriverBookings = async (req, res) => {
   const driverId = req.userId;
 
