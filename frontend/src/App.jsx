@@ -21,6 +21,7 @@ import RegisterFormPage from "./pages/Auth/RegisterFormPage";
 import RegisterTypeSelection from "./pages/Auth/RegisterTypeSelectionPage";
 import AdminVehicleForm from "./pages/Admin/AdminVehicleForm";
 import AdminDriverList from "./pages/Admin/AdminDriverList";
+import AdminDriverForm from "./pages/Admin/AdminDriverForm";
 
 function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
@@ -75,6 +76,8 @@ function App() {
         <Route path="vehicles/new" element={<AdminVehicleForm />} />
         <Route path="vehicles/edit/:id" element={<AdminVehicleForm />} />
         <Route path="drivers" element={<AdminDriverList />} />
+        <Route path="drivers/new" element={<AdminDriverForm />} />
+        <Route path="drivers/edit/:id" element={<AdminDriverForm />} />
       </Route>
       <Route
         path="/driver"

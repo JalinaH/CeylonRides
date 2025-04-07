@@ -183,3 +183,62 @@ export const adminDeleteDriver = async (req, res) => {
       .json({ error: "Server error deleting driver.", details: error.message });
   }
 };
+
+export const adminCreateDriver = async (req, res) => {
+  const {
+    username,
+    email,
+    password,
+    phone,
+    licenseNumber,
+    licenseExpiry,
+    experienceYears,
+    languages,
+  } = req.body;
+  console.log("Attempting to create driver (Admin)... Email:", email);
+
+  if (!username || !email || !password || !licenseNumber) {
+    return res.status(400).json({
+      error:
+        "Username, Email, Password, and License Number are required for drivers.",
+    });
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists." });
+    }
+
+    const driverData = {
+      username,
+      email,
+      password,
+      role: "driver",
+      phone,
+      licenseNumber,
+      licenseExpiry: licenseExpiry || null,
+      experienceYears: experienceYears || 0,
+      languages: languages || [],
+    };
+
+    const newDriver = new User(driverData);
+    const savedDriver = await newDriver.save();
+    console.log("Driver created successfully:", savedDriver._id);
+    const driverResponse = savedDriver.toObject();
+    delete driverResponse.password;
+
+    res.status(201).json(driverResponse);
+  } catch (error) {
+    console.error("Error creating driver:", error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        error: "Driver validation failed.",
+        details: Object.values(error.errors).map((e) => e.message),
+      });
+    }
+    res
+      .status(500)
+      .json({ error: "Server error creating driver.", details: error.message });
+  }
+};

@@ -5,6 +5,7 @@ import {
   adminGetAllDrivers,
   adminGetDriverById,
   adminUpdateDriver,
+  adminCreateDriver,
 } from "../controllers/adminDriverController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 
@@ -15,5 +16,6 @@ router.get("/drivers", verifyAdmin, adminGetAllDrivers);
 router.get("/drivers/:id", verifyAdmin, adminGetDriverById);
 router.put("/drivers/:id", verifyAdmin, adminUpdateDriver);
 router.delete("/drivers/:id", verifyAdmin, adminDeleteDriver);
+router.post("/drivers", verifyAdmin, adminCreateDriver);
 
 export default router;
