@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   FaSpinner,
@@ -14,6 +14,7 @@ const AdminVehicleList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -48,14 +49,35 @@ const AdminVehicleList = () => {
     fetchVehicles();
   }, [token]);
 
-  const handleDelete = async (vehicleId) => {
+  const handleDelete = async (vehicleId, vehicleName) => {
     if (
       window.confirm(
-        "Are you sure you want to delete this vehicle? This action cannot be undone."
+        `Are you sure you want to delete vehicle: ${vehicleName}? This cannot be undone.`
       )
     ) {
       console.log("Attempting to delete vehicle:", vehicleId);
-      alert("Delete functionality not yet implemented.");
+      setError(null);
+      try {
+        const response = await fetch(`/api/admin/vehicles/${vehicleId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(
+            result.error || `Failed to delete: ${response.statusText}`
+          );
+        }
+        console.log(result.message);
+        alert(result.message || "Vehicle deleted successfully.");
+        setVehicles((prev) => prev.filter((v) => v._id !== vehicleId));
+      } catch (err) {
+        console.error("Delete error:", err);
+        setError(`Delete failed: ${err.message}`);
+      } finally {
+      }
     }
   };
 
@@ -161,7 +183,7 @@ const AdminVehicleList = () => {
                       <FaEdit />
                     </Link>
                     <button
-                      onClick={() => handleDelete(vehicle._id)}
+                      onClick={() => handleDelete(vehicle._id, `${vehicle.brand} ${vehicle.model}`)}
                       title="Delete Vehicle"
                       className="text-red-400 hover:text-red-600"
                     >

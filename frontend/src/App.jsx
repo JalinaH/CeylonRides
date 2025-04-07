@@ -19,6 +19,8 @@ import DriverProtectedRoute from "./components/Driver/DriverProtectedRoutes";
 import DriverBookingsPage from "./pages/Driver/DriverBookingPage";
 import RegisterFormPage from "./pages/Auth/RegisterFormPage";
 import RegisterTypeSelection from "./pages/Auth/RegisterTypeSelectionPage";
+import AdminVehicleForm from "./pages/Admin/AdminVehicleForm";
+import AdminDriverList from "./pages/Admin/AdminDriverList";
 
 function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
@@ -69,6 +71,10 @@ function App() {
         <Route path="users" element={<AdminUserList />} />
         <Route path="vehicles" element={<AdminVehicleList />} />
         <Route path="bookings" element={<AdminBookingList />} />
+        <Route path="vehicles" element={<AdminVehicleList />} />
+        <Route path="vehicles/new" element={<AdminVehicleForm />} />
+        <Route path="vehicles/edit/:id" element={<AdminVehicleForm />} />
+        <Route path="drivers" element={<AdminDriverList />} />
       </Route>
       <Route
         path="/driver"

@@ -6,6 +6,7 @@ import {
   FaBook,
   FaUsers,
   FaSignOutAlt,
+  FaUserTie,
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 
@@ -43,6 +44,9 @@ const AdminLayout = () => {
           </NavLink>
           <NavLink to="/admin/users" className={sidebarLinkClasses}>
             <FaUsers className="mr-3" /> Users
+          </NavLink>
+          <NavLink to="/admin/drivers" className={sidebarLinkClasses}>
+            <FaUserTie className="mr-3" /> Drivers
           </NavLink>
         </nav>
         <div className="mt-auto pt-4 border-t border-gray-700">
