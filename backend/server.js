@@ -9,6 +9,7 @@ import adminUserRoutes from "./routes/adminUserRoutes.js";
 import adminBookingRoutes from "./routes/adminBookingRoutes.js";
 import adminVehicleRoutes from "./routes/adminVehiclesRoutes.js";
 import driverAdminRoutes from "./routes/adminDriverRoutes.js";
+import { verifyAdmin } from "./utils/verifyToken.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -26,7 +27,7 @@ app.use("/api", vehicleRoutes);
 app.use("/api", driverRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api", userRoutes);
-app.use("/api/contact", contactRoutes); 
+app.use("/api/contact", contactRoutes);
 app.use("/api/admin", adminUserRoutes);
 app.use("/api/admin", adminBookingRoutes);
 app.use("/api/admin", adminVehicleRoutes);
