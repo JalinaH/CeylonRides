@@ -14,13 +14,15 @@ const VehicleProfile = () => {
   const [vehicle, setVehicle] = useState(null);
   const [availability, setAvailability] = useState([]);
 
+  const API_BASE_URL = import.meta.env.VITE_API_TARGET_URL || "";
+
   useEffect(() => {
-    fetch(`http://localhost:5001/api/vehicles/${id}`)
+    fetch(`${API_BASE_URL}/api/vehicles/${id}`)
       .then((response) => response.json())
       .then((data) => setVehicle(data))
       .catch((error) => console.error("Error fetching vehicle:", error));
 
-    fetch(`http://localhost:5001/api/vehicles/${id}/availability`)
+    fetch(`${API_BASE_URL}/api/vehicles/${id}/availability`)
       .then((response) => response.json())
       .then((data) => setAvailability(data))
       .catch((error) => console.error("Error fetching availability:", error));
