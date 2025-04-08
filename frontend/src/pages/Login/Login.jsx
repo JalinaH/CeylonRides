@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext"; 
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login, loading } = useAuth(); 
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -17,12 +16,9 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    const result = await login(email, password, from);
 
-    const result = await login(email, password); 
-
-    if (result.success) {
-      navigate(from, { replace: true });
-    } else {
+    if (!result.success) {
       setError(result.error || "Login failed. Please check your credentials.");
     }
   };
@@ -85,7 +81,7 @@ const LoginPage = () => {
           </div>
           <button
             type="submit"
-            disabled={loading} 
+            disabled={loading}
             className={`w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition duration-300 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
@@ -95,7 +91,7 @@ const LoginPage = () => {
         </form>
         <p className="mt-6 text-center text-gray-400">
           {" "}
-          Don't have an account? 
+          Don't have an account?
           <Link to="/register" className="text-yellow-500 hover:underline">
             Register here
           </Link>

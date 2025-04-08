@@ -1,5 +1,5 @@
 import Booking from "../models/booking.js";
-import User from "../models/user.js"
+import User from "../models/user.js";
 export const getDriverBookings = async (req, res) => {
   const driverId = req.userId;
 
@@ -85,6 +85,48 @@ export const getDriverProfile = async (req, res) => {
     console.error("Error fetching driver profile:", error);
     res.status(500).json({
       error: "Server error fetching profile.",
+      details: error.message,
+    });
+  }
+};
+
+export const updateDriverProfile = async (req, res) => {
+  const driverId = req.userId;
+  const updateData = req.body;
+
+  delete updateData.role;
+  delete updateData.email;
+  delete updateData.password;
+
+  console.log(
+    `Driver ${driverId} attempting to update profile with:`,
+    updateData
+  );
+
+  try {
+    const updatedDriver = await User.findByIdAndUpdate(driverId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    if (!updatedDriver) {
+      return res.status(404).json({ error: "Driver profile not found." });
+    }
+
+    console.log(`Driver ${driverId} profile updated successfully.`);
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", user: updatedDriver });
+  } catch (error) {
+    console.error(`Error updating driver profile ${driverId}:`, error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        error: "Profile validation failed.",
+        details: Object.values(error.errors).map((e) => e.message),
+      });
+    }
+    res.status(500).json({
+      error: "Server error updating profile.",
       details: error.message,
     });
   }

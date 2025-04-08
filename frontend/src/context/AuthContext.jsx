@@ -7,11 +7,12 @@ const API_URL = "/api";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("authToken") || null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     const storedToken = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("authUser");
 
@@ -20,17 +21,22 @@ export const AuthProvider = ({ children }) => {
         const parsedUser = JSON.parse(storedUser);
         setToken(storedToken);
         setUser(parsedUser);
-        console.log("Auth restored from localStorage");
+        console.log("Auth restored from localStorage for:", parsedUser.role);
       } catch (e) {
-        console.error("Failed to parse stored user", e);
+        console.error("Failed to parse stored user or token invalid", e);
         localStorage.removeItem("authToken");
         localStorage.removeItem("authUser");
+        setToken(null);
+        setUser(null);
       }
+    } else {
+      setToken(null);
+      setUser(null);
     }
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, fromPath = "/") => {
     setLoading(true);
     try {
       const response = await fetch(`${API_URL}/users/login`, {
@@ -45,15 +51,40 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.error || "Login failed");
       }
 
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("authUser", JSON.stringify(data.user));
-      console.log("Login successful", data.user);
+      const loggedInUser = data.user;
+      const receivedToken = data.token;
+
+      setUser(loggedInUser);
+      setToken(receivedToken);
+      localStorage.setItem("authToken", receivedToken);
+      localStorage.setItem("authUser", JSON.stringify(loggedInUser));
+      console.log("Login successful for:", loggedInUser.role);
+
+      let targetPath = fromPath;
+
+      if (loggedInUser.role === "admin") {
+        targetPath = "/admin/dashboard";
+        console.log("Redirecting admin to:", targetPath);
+      } else if (loggedInUser.role === "driver") {
+        targetPath = "/driver/dashboard";
+        console.log("Redirecting driver to:", targetPath);
+      } else {
+        if (targetPath === "/login") {
+          targetPath = "/";
+        }
+        console.log("Redirecting tourist to:", targetPath);
+      }
+
+      navigate(targetPath, { replace: true });
+
       setLoading(false);
       return { success: true };
     } catch (error) {
       console.error("Login error:", error);
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("authUser");
       setLoading(false);
       return { success: false, error: error.message };
     }

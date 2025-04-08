@@ -1,6 +1,11 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
-import { FaCalendarAlt, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaTachometerAlt,
+} from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 
 const DriverLayout = () => {
@@ -25,6 +30,9 @@ const DriverLayout = () => {
           </NavLink>
         </div>
         <nav className="flex-grow space-y-2">
+          <NavLink to="/driver/dashboard" className={sidebarLinkClasses} end>
+            <FaTachometerAlt className="mr-3" /> Dashboard
+          </NavLink>
           <NavLink to="/driver/bookings" className={sidebarLinkClasses} end>
             <FaCalendarAlt className="mr-3" /> My Schedule
           </NavLink>
@@ -43,7 +51,7 @@ const DriverLayout = () => {
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6 md:p-8">
-        <Outlet /> 
+        <Outlet />
       </main>
     </div>
   );

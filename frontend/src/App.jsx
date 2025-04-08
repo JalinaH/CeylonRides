@@ -16,12 +16,14 @@ import AdminVehicleList from "./pages/Admin/AdminVehicleList";
 import AdminBookingList from "./pages/Admin/AdminBookingList";
 import DriverLayout from "./components/Driver/DriverLayout";
 import DriverProtectedRoute from "./components/Driver/DriverProtectedRoutes";
-import DriverBookingsPage from "./pages/Driver/DriverBookingPage";
+import DriverBookingsPage from "./pages/Driver/DriverBookingsPage";
 import RegisterFormPage from "./pages/Auth/RegisterFormPage";
 import RegisterTypeSelection from "./pages/Auth/RegisterTypeSelectionPage";
 import AdminVehicleForm from "./pages/Admin/AdminVehicleForm";
 import AdminDriverList from "./pages/Admin/AdminDriverList";
 import AdminDriverForm from "./pages/Admin/AdminDriverForm";
+import DriverDashboard from "./pages/Driver/DriverDashBoard";
+import DriverProfilePage from "./pages/Driver/DriverProfile";
 
 function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
@@ -87,8 +89,10 @@ function App() {
           </DriverProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="bookings" replace />} />
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<DriverDashboard />} />{" "}
         <Route path="bookings" element={<DriverBookingsPage />} />
+        <Route path="profile" element={<DriverProfilePage />} />
       </Route>
     </Routes>
   );
