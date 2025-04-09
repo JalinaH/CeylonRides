@@ -32,6 +32,8 @@ const DriverProfilePage = () => {
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(null);
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   const fetchProfile = useCallback(async () => {
     if (!token) {
       setError("Authentication required.");
@@ -41,7 +43,7 @@ const DriverProfilePage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/drivers/profile", {
+      const response = await fetch(`${API_BASE_URL}/api/drivers/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) {
@@ -98,7 +100,7 @@ const DriverProfilePage = () => {
     };
 
     try {
-      const response = await fetch("/api/drivers/profile", {
+      const response = await fetch(`${API_BASE_URL}/api/drivers/profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

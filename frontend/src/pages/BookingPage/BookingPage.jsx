@@ -15,7 +15,7 @@ import {
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import moment from "moment";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth
+import { useAuth } from "../../context/AuthContext";
 
 const DRIVER_COST_PER_DAY = 50;
 
@@ -23,22 +23,20 @@ const BookingPage = () => {
   const { id: vehicleId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth(); // Get authenticated user
+  const { user } = useAuth();
 
-  // ... (vehicle, loading, error, formErrors, totalPrice states remain the same) ...
   const [vehicle, setVehicle] = useState(null);
-  const [loading, setLoading] = useState(true); // For vehicle fetch + booking submit
-  const [submitError, setSubmitError] = useState(null); // Specific error for submission
+  const [loading, setLoading] = useState(true);
+  const [submitError, setSubmitError] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
 
   const [formData, setFormData] = useState(() => {
     const queryParams = new URLSearchParams(location.search);
-    // Pre-fill name and email if user is logged in
     return {
-      name: user?.username || "", // Use user's username
-      email: user?.email || "", // Use user's email
-      phone: "", // Keep phone separate unless stored in user profile
+      name: user?.username || "",
+      email: user?.email || "",
+      phone: "",
       pickupDate: queryParams.get("pickupDate") || "",
       pickupTime: queryParams.get("pickupTime") || "",
       returnDate: queryParams.get("returnDate") || "",
@@ -51,11 +49,11 @@ const BookingPage = () => {
     };
   });
 
-  // --- Fetch Vehicle Details (useEffect remains the same) ---
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   useEffect(() => {
-    // ... (fetch vehicle logic - no changes needed here) ...
     setLoading(true);
-    const fetchUrl = `/api/vehicles/${vehicleId}`;
+    const fetchUrl = `${API_BASE_URL}/api/vehicles/${vehicleId}`;
     fetch(fetchUrl)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to fetch vehicle details");
@@ -75,9 +73,7 @@ const BookingPage = () => {
       });
   }, [vehicleId]);
 
-  // --- Recalculate Price (useEffect remains the same) ---
   useEffect(() => {
-    // ... (price calculation logic - no changes needed here) ...
     if (vehicle && formData.pickupDate && formData.returnDate) {
       try {
         const start = moment(
@@ -113,7 +109,6 @@ const BookingPage = () => {
     formData.driverOption,
   ]);
 
-  // --- Handle Input Change (remains the same) ---
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -125,9 +120,7 @@ const BookingPage = () => {
     }
   };
 
-  // --- Validate Form (remains the same) ---
   const validateForm = () => {
-    // ... (validation logic - no changes needed here) ...
     const errors = {};
     if (!formData.name.trim()) errors.name = "Name is required";
     if (!formData.email.trim()) errors.email = "Email is required";
@@ -160,55 +153,38 @@ const BookingPage = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // --- Handle Form Submit (Update to include userId) ---
   const handleSubmit = (e) => {
-    // Make it non-async for now
     e.preventDefault();
     if (!validateForm()) {
       console.log("Form validation failed", formErrors);
-      // Optionally scroll to the first error
       return;
     }
-
-    // Ensure essential data is present before navigating
     if (!vehicle) {
       setSubmitError("Vehicle details not loaded. Cannot proceed.");
       return;
     }
     if (!user) {
       setSubmitError("You must be logged in to book.");
-      // Consider redirecting to login if not logged in
-      // navigate('/login', { state: { from: location } });
       return;
     }
-
-    // Clear any previous submission errors
     setSubmitError(null);
 
-    // --- Prepare data to pass to confirmation page ---
     const bookingDetailsToConfirm = {
-      ...formData, // User input
+      ...formData,
       userId: user._id,
       vehicleId: vehicle._id,
       vehicleBrand: vehicle.brand,
       vehicleModel: vehicle.model,
-      vehicleImage: vehicle.image, // Pass image for display
+      vehicleImage: vehicle.image,
       vehicleType: vehicle.type,
       vehicleSeats: vehicle.seatingCapacity,
-      totalPrice: totalPrice, // Pass calculated price
+      totalPrice: totalPrice,
     };
 
-    // --- Navigate to Confirmation Page ---
-    // Pass the prepared data using location state
     navigate(`/booking-confirmation`, {
-      // Use a generic path for confirmation
       state: { bookingData: bookingDetailsToConfirm },
     });
   };
-
-  // --- Render Logic ---
-  // Add check for auth loading state if needed
-  // if (authLoading || (loading && !vehicle)) { ... }
 
   if (loading && !vehicle) {
     return (
@@ -219,13 +195,12 @@ const BookingPage = () => {
   }
 
   if (submitError && !vehicle) {
-    // Error fetching vehicle initially
     return (
       <div className="min-h-screen bg-gray-900 text-white">
         <Navbar />
         <div className="container mx-auto p-6 text-center">
           <h1 className="text-2xl text-red-500">Error Loading Vehicle</h1>
-          <p className="text-gray-300 mb-4">{error}</p>
+          <p className="text-gray-300 mb-4">{submitError}</p>
           <button
             onClick={() => navigate(-1)}
             className="bg-yellow-500 text-gray-900 px-4 py-2 rounded hover:bg-yellow-600"
@@ -249,7 +224,7 @@ const BookingPage = () => {
         {vehicle && (
           <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg shadow-md mb-6 flex flex-col md:flex-row items-center gap-4">
             <img
-              src={vehicle.image || "https://via.placeholder.com/150"} // Placeholder image
+              src={vehicle.image || "https://via.placeholder.com/150"}
               alt={`${vehicle.brand} ${vehicle.model}`}
               className="w-48 h-32 object-cover rounded-md flex-shrink-0"
             />
@@ -263,7 +238,6 @@ const BookingPage = () => {
           </div>
         )}
 
-        {/* Display SUBMISSION errors here */}
         {submitError && (
           <div className="bg-red-800 text-white p-3 rounded-md mb-4 text-center">
             {submitError}
@@ -275,13 +249,11 @@ const BookingPage = () => {
           className="bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg"
           noValidate
         >
-          {/* --- User Details --- */}
           <fieldset className="mb-6 border border-gray-700 p-4 rounded-md">
             <legend className="text-xl font-semibold mb-4 px-2 text-gray-200">
               Your Details
             </legend>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Name - Potentially read-only if logged in */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -294,8 +266,6 @@ const BookingPage = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  // readOnly={!!user} // Make read-only if logged in? User choice.
-                  // className={`w-full p-3 bg-gray-700 rounded-lg text-white ${formErrors.name ? 'border border-red-500' : 'border border-gray-600'} ${!!user ? 'bg-gray-600 cursor-not-allowed' : ''}`}
                   className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
                     formErrors.name
                       ? "border border-red-500"
@@ -307,7 +277,6 @@ const BookingPage = () => {
                   <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
                 )}
               </div>
-              {/* Email - Potentially read-only if logged in */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -320,8 +289,6 @@ const BookingPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  // readOnly={!!user} // Make read-only if logged in? User choice.
-                  // className={`w-full p-3 bg-gray-700 rounded-lg text-white ${formErrors.email ? 'border border-red-500' : 'border border-gray-600'} ${!!user ? 'bg-gray-600 cursor-not-allowed' : ''}`}
                   className={`w-full p-3 bg-gray-700 rounded-lg text-white ${
                     formErrors.email
                       ? "border border-red-500"
@@ -335,9 +302,7 @@ const BookingPage = () => {
                   </p>
                 )}
               </div>
-              {/* Phone */}
               <div>
-                {/* ... phone input ... */}
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
                     <FaPhone className="mr-2" />
@@ -365,13 +330,11 @@ const BookingPage = () => {
             </div>
           </fieldset>
 
-          {/* --- Booking Details (No changes needed here) --- */}
           <fieldset className="mb-6 border border-gray-700 p-4 rounded-md">
             <legend className="text-xl font-semibold mb-4 px-2 text-gray-200">
               Booking Details
             </legend>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              {/* Pickup Point */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -397,7 +360,6 @@ const BookingPage = () => {
                   </p>
                 )}
               </div>
-              {/* Return Point */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -426,7 +388,6 @@ const BookingPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Pickup Date */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -452,7 +413,6 @@ const BookingPage = () => {
                   </p>
                 )}
               </div>
-              {/* Pickup Time */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -478,7 +438,6 @@ const BookingPage = () => {
                   </p>
                 )}
               </div>
-              {/* Return Date */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -504,7 +463,6 @@ const BookingPage = () => {
                   </p>
                 )}
               </div>
-              {/* Return Time */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -533,13 +491,11 @@ const BookingPage = () => {
             </div>
           </fieldset>
 
-          {/* --- Options (No changes needed here) --- */}
           <fieldset className="mb-6 border border-gray-700 p-4 rounded-md">
             <legend className="text-xl font-semibold mb-4 px-2 text-gray-200">
               Options & Requests
             </legend>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              {/* Number of Tourists */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -567,7 +523,6 @@ const BookingPage = () => {
                   </p>
                 )}
               </div>
-              {/* Driver Option */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -588,7 +543,6 @@ const BookingPage = () => {
                 >
                   <option value="withDriver">With Driver</option>
                   <option value="selfDrive">Self-Drive</option>
-                  {/* TODO: Potentially disable 'selfDrive' based on vehicle type or license requirements */}
                 </select>
                 {formErrors.driverOption && (
                   <p className="text-red-500 text-sm mt-1">
@@ -597,7 +551,6 @@ const BookingPage = () => {
                 )}
               </div>
             </div>
-            {/* Special Requests */}
             <div>
               <label className="block mb-1 text-gray-300">
                 <span className="flex items-center">
@@ -616,7 +569,6 @@ const BookingPage = () => {
             </div>
           </fieldset>
 
-          {/* --- Price & Submit --- */}
           <div className="mt-6 p-4 bg-gray-900 rounded-lg text-center">
             <p className="text-2xl font-bold text-yellow-500 flex items-center justify-center">
               <FaDollarSign className="mr-2" /> Estimated Total: $
@@ -631,7 +583,7 @@ const BookingPage = () => {
 
           <button
             type="submit"
-            disabled={loading} // Disable button while fetching vehicle OR submitting booking
+            disabled={loading}
             className={`w-full mt-6 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition duration-300 text-center ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}

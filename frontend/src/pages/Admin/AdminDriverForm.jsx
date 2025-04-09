@@ -23,23 +23,25 @@ const AdminDriverForm = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    password: "", 
-    confirmPassword: "", 
+    password: "",
+    confirmPassword: "",
     phone: "",
     licenseNumber: "",
     licenseExpiry: "",
     experienceYears: 0,
-    languages: "", 
+    languages: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(isEditing);
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   useEffect(() => {
     if (isEditing && token) {
       setLoadingDetails(true);
       setError(null);
-      fetch(`/api/admin/drivers/${driverId}`, {
+      fetch(`${API_BASE_URL}/api/admin/drivers/${driverId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
@@ -50,7 +52,7 @@ const AdminDriverForm = () => {
           setFormData({
             username: data.username || "",
             email: data.email || "",
-            password: "", 
+            password: "",
             confirmPassword: "",
             phone: data.phone || "",
             licenseNumber: data.licenseNumber || "",
@@ -58,7 +60,7 @@ const AdminDriverForm = () => {
               ? moment(data.licenseExpiry).format("YYYY-MM-DD")
               : "", // Format date for input
             experienceYears: data.experienceYears || 0,
-            languages: (data.languages || []).join(", "), 
+            languages: (data.languages || []).join(", "),
           });
         })
         .catch((err) => setError(`Error loading driver: ${err.message}`))
@@ -117,7 +119,7 @@ const AdminDriverForm = () => {
         .split(",")
         .map((l) => l.trim())
         .filter((l) => l),
-      role: "driver", 
+      role: "driver",
     };
 
     if (formData.password) {
@@ -125,8 +127,8 @@ const AdminDriverForm = () => {
     }
 
     const url = isEditing
-      ? `/api/admin/drivers/${driverId}`
-      : "/api/admin/drivers";
+      ? `${API_BASE_URL}/api/admin/drivers/${driverId}`
+      : `${API_BASE_URL}/api/admin/drivers`;
     const method = isEditing ? "PUT" : "POST";
 
     try {
@@ -144,7 +146,7 @@ const AdminDriverForm = () => {
       }
 
       alert(`Driver ${isEditing ? "updated" : "created"} successfully!`);
-      navigate("/admin/drivers"); 
+      navigate("/admin/drivers");
     } catch (err) {
       setError(err.message);
     } finally {

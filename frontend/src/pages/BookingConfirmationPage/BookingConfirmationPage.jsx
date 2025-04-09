@@ -51,8 +51,10 @@ const BookingConfirmationPage = () => {
     setIsLoading(true);
     setError(null);
 
+    const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
     try {
-      const submitUrl = `/api/bookings`;
+      const submitUrl = `${API_BASE_URL}/api/bookings`;
       const response = await fetch(submitUrl, {
         method: "POST",
         headers: {

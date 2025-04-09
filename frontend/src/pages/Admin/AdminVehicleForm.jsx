@@ -11,7 +11,6 @@ import {
 } from "react-icons/fa";
 import {
   MdOutlineBrandingWatermark,
-  MdFormatListNumbered,
   MdAirlineSeatReclineNormal,
 } from "react-icons/md";
 
@@ -38,11 +37,13 @@ const AdminVehicleForm = () => {
   const [error, setError] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(isEditing);
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   useEffect(() => {
     if (isEditing && token) {
       setLoadingDetails(true);
       setError(null);
-      fetch(`/api/admin/vehicles/${vehicleId}`, {
+      fetch(`${API_BASE_URL}/api/admin/vehicles/${vehicleId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
@@ -111,8 +112,8 @@ const AdminVehicleForm = () => {
     };
 
     const url = isEditing
-      ? `/api/admin/vehicles/${vehicleId}`
-      : "/api/admin/vehicles";
+      ? `${API_BASE_URL}/api/admin/vehicles/${vehicleId}`
+      : `${API_BASE_URL}/api/admin/vehicles`;
     const method = isEditing ? "PUT" : "POST";
 
     try {

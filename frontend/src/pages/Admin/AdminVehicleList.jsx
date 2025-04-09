@@ -16,6 +16,8 @@ const AdminVehicleList = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   useEffect(() => {
     const fetchVehicles = async () => {
       if (!token) return;
@@ -24,7 +26,7 @@ const AdminVehicleList = () => {
       setError(null);
 
       try {
-        const response = await fetch("/api/admin/vehicles", {
+        const response = await fetch(`${API_BASE_URL}/api/admin/vehicles`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,7 +60,7 @@ const AdminVehicleList = () => {
       console.log("Attempting to delete vehicle:", vehicleId);
       setError(null);
       try {
-        const response = await fetch(`/api/admin/vehicles/${vehicleId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/vehicles/${vehicleId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

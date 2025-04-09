@@ -14,12 +14,14 @@ const AdminBookingList = () => {
   const [loadingDrivers, setLoadingDrivers] = useState({});
   const [updateError, setUpdateError] = useState({});
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   const fetchBookings = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/admin/bookings", {
+      const response = await fetch(`${API_BASE_URL}/api/admin/bookings`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error("Failed to fetch bookings");
@@ -56,7 +58,7 @@ const AdminBookingList = () => {
         endDate: moment(endDate).format("YYYY-MM-DD"),
       }).toString();
 
-      const response = await fetch(`/api/admin/drivers/available?${query}`, {
+      const response = await fetch(`${API_BASE_URL}/api/admin/drivers/available?${query}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) {
@@ -101,7 +103,7 @@ const AdminBookingList = () => {
         ...(driverIdToAssign && { driverId: driverIdToAssign }),
       };
 
-      const response = await fetch(`/api/admin/bookings/${bookingId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -134,7 +136,7 @@ const AdminBookingList = () => {
     setUpdateError((prev) => ({ ...prev, [bookingId]: null }));
 
     try {
-      const response = await fetch(`/api/admin/bookings/${bookingId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,

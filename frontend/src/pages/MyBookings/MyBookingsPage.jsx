@@ -28,7 +28,7 @@ const MyBookingsPage = () => {
       if (!token) {
         setError("Authentication required to view bookings.");
         setLoading(false);
-        return; // Don't fetch if no token
+        return;
       }
 
       setLoading(true);
@@ -46,10 +46,9 @@ const MyBookingsPage = () => {
 
         if (!response.ok) {
           if (response.status === 401) {
-            // Handle specific auth errors
             throw new Error("Unauthorized. Please log in again.");
           }
-          const errorData = await response.json().catch(() => ({})); // Try to parse error
+          const errorData = await response.json().catch(() => ({}));
           throw new Error(
             errorData.error ||
               `Failed to fetch bookings: ${response.statusText}`
@@ -69,7 +68,7 @@ const MyBookingsPage = () => {
     };
 
     fetchBookings();
-  }, [token]); // Re-fetch if token changes (e.g., on login/logout)
+  }, [token]);
 
   const renderStatusBadge = (status) => {
     switch (status?.toLowerCase()) {
@@ -148,7 +147,6 @@ const MyBookingsPage = () => {
       );
     }
 
-    // --- Display Bookings ---
     return (
       <div className="space-y-6">
         {bookings.map((booking) => (
@@ -156,14 +154,11 @@ const MyBookingsPage = () => {
             key={booking._id}
             className="bg-gray-800 p-5 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 md:items-center"
           >
-            {/* Basic Vehicle Info (Consider fetching image if needed) */}
             <div className="flex-shrink-0 w-full md:w-40 text-center md:text-left">
               <FaCar className="text-3xl text-yellow-500 mx-auto md:mx-0 mb-2" />
               <h3 className="text-lg font-semibold text-white">
                 {booking.vehicleBrand} {booking.vehicleModel}
               </h3>
-              {/* Optional: Vehicle Type */}
-              {/* <p className="text-sm text-gray-400">{booking.vehicleType}</p> */}
             </div>
 
             <div className="flex-grow border-t md:border-t-0 md:border-l border-gray-700 pt-4 md:pt-0 md:pl-4">
@@ -198,13 +193,7 @@ const MyBookingsPage = () => {
                     ${booking.totalPrice?.toFixed(2)}
                   </strong>
                 </p>
-                {/* Add Action Buttons (View Details, Cancel) Here */}
                 <div className="space-x-2">
-                  {/* <Link to={`/booking-details/${booking._id}`} className='text-xs text-blue-400 hover:underline'>Details</Link> */}
-                  {/* Add Cancel button if status allows */}
-                  {/* {booking.bookingStatus === 'pending' || booking.bookingStatus === 'confirmed' && (
-                                          <button onClick={() => handleCancelBooking(booking._id)} className='text-xs text-red-400 hover:underline'>Cancel</button>
-                                      )} */}
                 </div>
               </div>
             </div>

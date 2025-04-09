@@ -19,6 +19,8 @@ const DriverBookingsPage = () => {
   const [updateError, setUpdateError] = useState(null);
   const { token } = useAuth();
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   const fetchBookings = useCallback(async () => {
     if (!token) {
       setError("Authentication required.");
@@ -29,7 +31,7 @@ const DriverBookingsPage = () => {
     setError(null);
     setUpdateError(null);
     try {
-      const response = await fetch("/api/drivers/my-bookings", {
+      const response = await fetch(`${API_BASE_URL}/api/drivers/my-bookings`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) {
@@ -55,7 +57,7 @@ const DriverBookingsPage = () => {
     setUpdateError(null);
     try {
       const response = await fetch(
-        `/api/drivers/bookings/${bookingId}/status`,
+        `${API_BASE_URL}/api/drivers/bookings/${bookingId}/status`,
         {
           method: "PATCH",
           headers: {

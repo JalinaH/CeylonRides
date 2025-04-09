@@ -4,6 +4,8 @@ import Footer from "../../components/Footer";
 import { FaUser, FaEnvelope, FaPaperPlane, FaSpinner } from "react-icons/fa";
 import { MdSubject } from "react-icons/md";
 
+const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
 const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -13,7 +15,7 @@ const ContactPage = () => {
   });
   const [formErrors, setFormErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" }); // For success/error after submit
+  const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,14 +23,12 @@ const ContactPage = () => {
       ...prevData,
       [name]: value,
     }));
-    // Clear error for this field when user types
     if (formErrors[name]) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
         [name]: null,
       }));
     }
-    // Clear general submit status if user types again
     if (submitStatus.message) {
       setSubmitStatus({ type: "", message: "" });
     }
@@ -40,7 +40,6 @@ const ContactPage = () => {
     if (!formData.email.trim()) errors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email))
       errors.email = "Please enter a valid email address";
-    // Subject is optional in this setup, add validation if required
     if (!formData.message.trim()) errors.message = "Message cannot be empty";
 
     setFormErrors(errors);
@@ -49,7 +48,7 @@ const ContactPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitStatus({ type: "", message: "" }); // Clear previous status
+    setSubmitStatus({ type: "", message: "" });
 
     if (!validateForm()) {
       console.log("Contact form validation failed", formErrors);
@@ -59,8 +58,7 @@ const ContactPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
-        // Use relative path for proxy
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,18 +69,15 @@ const ContactPage = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        // Use error details from backend if available
         throw new Error(
           result.error || `Failed to send message: ${response.statusText}`
         );
       }
 
-      // --- Success ---
       setSubmitStatus({
         type: "success",
         message: result.message || "Message sent successfully!",
       });
-      // Clear the form
       setFormData({ name: "", email: "", subject: "", message: "" });
       setFormErrors({});
     } catch (err) {
@@ -101,11 +96,7 @@ const ContactPage = () => {
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <Navbar />
       <div className="container mx-auto p-6 flex-grow flex items-center justify-center">
-        {" "}
-        {/* Center content */}
         <div className="w-full max-w-2xl">
-          {" "}
-          {/* Limit width */}
           <h1 className="text-4xl font-bold mb-8 text-center text-yellow-500">
             Get In Touch
           </h1>
@@ -115,10 +106,9 @@ const ContactPage = () => {
           </p>
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-800 bg-opacity-80 p-8 rounded-lg shadow-lg space-y-6" // Added space-y
+            className="bg-gray-800 bg-opacity-80 p-8 rounded-lg shadow-lg space-y-6"
             noValidate
           >
-            {/* Display Success/Error Message */}
             {submitStatus.message && (
               <div
                 className={`p-4 rounded-md text-center font-medium ${
@@ -132,7 +122,6 @@ const ContactPage = () => {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Name Input */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -156,7 +145,6 @@ const ContactPage = () => {
                 )}
               </div>
 
-              {/* Email Input */}
               <div>
                 <label className="block mb-1 text-gray-300">
                   <span className="flex items-center">
@@ -183,7 +171,6 @@ const ContactPage = () => {
               </div>
             </div>
 
-            {/* Subject Input (Optional) */}
             <div>
               <label className="block mb-1 text-gray-300">
                 <span className="flex items-center">
@@ -199,10 +186,8 @@ const ContactPage = () => {
                 className="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600 focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none"
                 placeholder="Booking Inquiry, Feedback, etc."
               />
-              {/* No error display unless subject becomes required */}
             </div>
 
-            {/* Message Textarea */}
             <div>
               <label className="block mb-1 text-gray-300">
                 <span className="flex items-center">
@@ -211,12 +196,12 @@ const ContactPage = () => {
               </label>
               <textarea
                 name="message"
-                rows="5" // Increased rows
+                rows="5"
                 value={formData.message}
                 onChange={handleInputChange}
                 className={`w-full p-3 bg-gray-700 rounded-lg text-white border ${
                   formErrors.message ? "border-red-500" : "border-gray-600"
-                } focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none resize-none`} // Added resize-none
+                } focus:border-yellow-500 focus:ring-yellow-500 focus:outline-none resize-none`}
                 placeholder="Write your message here..."
                 required
               ></textarea>
@@ -227,7 +212,6 @@ const ContactPage = () => {
               )}
             </div>
 
-            {/* Submit Button */}
             <div className="text-center">
               <button
                 type="submit"

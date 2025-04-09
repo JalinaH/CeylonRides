@@ -15,6 +15,8 @@ const DriverDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
     useEffect(() => {
         const fetchBookingSummary = async () => {
             if (!token) {
@@ -25,7 +27,7 @@ const DriverDashboard = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await fetch("/api/drivers/my-bookings", {
+                const response = await fetch(`${API_BASE_URL}/api/drivers/my-bookings`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!response.ok) {

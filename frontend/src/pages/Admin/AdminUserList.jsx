@@ -8,6 +8,8 @@ const AdminUserList = () => {
   const [error, setError] = useState(null);
   const { token } = useAuth();
 
+  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+
   useEffect(() => {
     const fetchUsers = async () => {
       if (!token) return; 
@@ -16,7 +18,7 @@ const AdminUserList = () => {
       setError(null);
 
       try {
-        const response = await fetch("/api/admin/users", {
+        const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
