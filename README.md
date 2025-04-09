@@ -109,8 +109,8 @@
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/[YourUsername]/[YourRepoName].git
-    cd [YourRepoName]
+    git clone https://github.com/JalinaH/CeylonRides.git
+    cd CeylonRides
     ```
 
 2.  **Install Backend Dependencies:**
@@ -123,7 +123,7 @@
 
 3.  **Install Frontend Dependencies:**
     ```bash
-    cd ../frontend # Or your frontend directory name
+    cd ../frontend
     npm install
     # or
     yarn install
@@ -138,35 +138,29 @@ Environment variables are crucial for configuration and security.
     PORT=5001                       # Port for the backend server
     MONGO_URI=[Your MongoDB Connection String] # Your MongoDB connection URL
     JWT_SECRET=[Your Secret Key for JWT]     # A strong, random secret key
-    # Add other variables if needed (e.g., email service credentials)
     ```
 
 2.  **Frontend (`frontend/.env` or `frontend/.env.development`):** Create a `.env` file (or `.env.development`) in the `frontend` directory:
     ```dotenv
     # URL for the backend API (used by frontend code)
-    VITE_API_BASE_URL=http://localhost:5001
-
-    # URL for the backend API Target (used by Vite proxy config)
     VITE_API_TARGET_URL=http://localhost:5001
     ```
-    *(Note: Having both might seem redundant if they are the same for development, but `VITE_API_BASE_URL` is read by your React code, while `VITE_API_TARGET_URL` can be read by `vite.config.js` for the proxy setup.)*
 
 ### Running the Application
 
 1.  **Start the Backend Server:**
     ```bash
     cd backend
-    npm run start # Or your specific start script (e.g., dev script for nodemon)
+    npm run start
     ```
     The backend should start, typically on port 5001 (or the `PORT` specified in `.env`).
 
 2.  **Start the Frontend Development Server:**
     Open a *new terminal window*.
     ```bash
-    cd frontend # Or your frontend directory name
+    cd frontend
     npm run dev
     ```
-    The frontend development server (Vite) will start, typically on port 5173.
 
 3.  **Access the Application:** Open your web browser and navigate to `http://localhost:5173`.
 
