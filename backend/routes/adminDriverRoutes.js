@@ -6,7 +6,7 @@ import {
   adminGetDriverById,
   adminUpdateDriver,
   adminCreateDriver,
-} from "../controllers/adminDriverController.js";
+} from "../controllers/admin/adminDriverController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 
 const router = express.Router();

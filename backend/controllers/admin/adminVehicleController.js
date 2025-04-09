@@ -1,4 +1,4 @@
-import Vehicle from "../models/vehicle.js";
+import Vehicle from "../../models/vehicle.js";
 
 export const adminGetAllVehicles = async (req, res) => {
   console.log("Attempting to fetch all vehicles (Admin)...");
