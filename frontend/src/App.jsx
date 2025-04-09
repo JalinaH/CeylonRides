@@ -26,7 +26,6 @@ import DriverDashboard from "./pages/Driver/DriverDashBoard";
 import DriverProfilePage from "./pages/Driver/DriverProfile";
 
 function App() {
-  const isAdminRoute = window.location.pathname.startsWith("/admin");
 
   return (
     <Routes>
