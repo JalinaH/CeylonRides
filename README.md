@@ -2,7 +2,7 @@
 
 **CeylonRides** is a full-stack web application designed to facilitate vehicle rentals, primarily targeting tourists who may also require drivers. It provides a seamless platform for browsing vehicles, managing bookings, and connecting tourists with drivers and administrators.
 
-**Live Demo:** [Link to your deployed application (if applicable)]
+**Live Demo:** https://ceylonrides.netlify.app/
 
 ![Screenshot of CeylonRides Homepage](<https://github.com/JalinaH/CeylonRides/blob/main/Screenshots/SCR-20250409-kvvc.jpeg>)
 
