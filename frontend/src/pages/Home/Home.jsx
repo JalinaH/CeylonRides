@@ -23,28 +23,27 @@ const vehicleCategories = [
     type: "Car",
     icon: FaCar,
     image:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?cs=srgb&dl=pexels-mikebirdy-170811.jpg&fm=jpg",
   }, // Replace with relevant images
   {
     name: "Vans",
     type: "Van",
     icon: FaBusAlt,
-    image:
-      "https://images.unsplash.com/photo-1606505719100-7695a1cf4a9e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    image: "https://deyotours.com/wp-content/uploads/2022/09/Mini-Van.jpg",
   },
   {
     name: "SUVs",
     type: "SUV",
     icon: FaTruckMoving,
     image:
-      "https://images.unsplash.com/photo-1588811690044-5a92863b1385?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      "https://media.istockphoto.com/id/1460883145/photo/ford-explorer-in-mountain-scenery.jpg?s=612x612&w=0&k=20&c=hI0ympw_nzEsbSedH8D-t1rOahGkVRvgV0FFyQISRNU=",
   },
   {
     name: "Scooters",
     type: "Scooter",
     icon: FaMotorcycle,
     image:
-      "https://images.unsplash.com/photo-1593672598113-49521a2a4b9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1025&q=80",
+      "https://images.pexels.com/photos/159192/vespa-roller-motor-scooter-cult-159192.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
   },
 ];
 
