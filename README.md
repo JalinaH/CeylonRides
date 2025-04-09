@@ -4,7 +4,7 @@
 
 **Live Demo:** [Link to your deployed application (if applicable)]
 
-![Screenshot of CeylonRides Homepage](<./path/to/your/screenshot.png>)
+![Screenshot of CeylonRides Homepage](<https://github.com/JalinaH/CeylonRides/blob/main/Screenshots/SCR-20250409-kvvc.jpeg>)
 
 ## Table of Contents
 
