@@ -32,7 +32,7 @@ const DriverProfilePage = () => {
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(null);
 
-  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchProfile = useCallback(async () => {
     if (!token) {

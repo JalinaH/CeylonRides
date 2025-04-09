@@ -16,7 +16,7 @@ const AdminDriverList = () => {
   const [error, setError] = useState(null);
   const { token } = useAuth();
 
-  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (!token) return;
@@ -43,10 +43,13 @@ const AdminDriverList = () => {
       console.log("Attempting to delete driver:", driverId);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/api/admin/drivers/${driverId}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          `${API_BASE_URL}/api/admin/drivers/${driverId}`,
+          {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const result = await response.json();
         if (!response.ok) {
           throw new Error(result.error || "Delete failed");

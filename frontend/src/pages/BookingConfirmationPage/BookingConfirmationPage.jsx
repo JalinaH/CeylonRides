@@ -51,7 +51,7 @@ const BookingConfirmationPage = () => {
     setIsLoading(true);
     setError(null);
 
-    const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     try {
       const submitUrl = `${API_BASE_URL}/api/bookings`;

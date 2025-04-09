@@ -14,7 +14,7 @@ const AdminBookingList = () => {
   const [loadingDrivers, setLoadingDrivers] = useState({});
   const [updateError, setUpdateError] = useState({});
 
-  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchBookings = useCallback(async () => {
     if (!token) return;
@@ -58,9 +58,12 @@ const AdminBookingList = () => {
         endDate: moment(endDate).format("YYYY-MM-DD"),
       }).toString();
 
-      const response = await fetch(`${API_BASE_URL}/api/admin/drivers/available?${query}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/drivers/available?${query}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
         throw new Error(errData.error || "Failed to fetch available drivers");
@@ -103,14 +106,17 @@ const AdminBookingList = () => {
         ...(driverIdToAssign && { driverId: driverIdToAssign }),
       };
 
-      const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/bookings/${bookingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const result = await response.json();
       if (!response.ok) {
@@ -136,16 +142,19 @@ const AdminBookingList = () => {
     setUpdateError((prev) => ({ ...prev, [bookingId]: null }));
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/bookings/${bookingId}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: "cancelled",
-        }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/bookings/${bookingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: "cancelled",
+          }),
+        }
+      );
 
       const result = await response.json();
       if (!response.ok) {

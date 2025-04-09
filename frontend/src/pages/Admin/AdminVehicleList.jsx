@@ -16,7 +16,7 @@ const AdminVehicleList = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
-  const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -60,12 +60,15 @@ const AdminVehicleList = () => {
       console.log("Attempting to delete vehicle:", vehicleId);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/api/admin/vehicles/${vehicleId}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${API_BASE_URL}/api/admin/vehicles/${vehicleId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const result = await response.json();
         if (!response.ok) {
           throw new Error(
@@ -185,7 +188,12 @@ const AdminVehicleList = () => {
                       <FaEdit />
                     </Link>
                     <button
-                      onClick={() => handleDelete(vehicle._id, `${vehicle.brand} ${vehicle.model}`)}
+                      onClick={() =>
+                        handleDelete(
+                          vehicle._id,
+                          `${vehicle.brand} ${vehicle.model}`
+                        )
+                      }
                       title="Delete Vehicle"
                       className="text-red-400 hover:text-red-600"
                     >

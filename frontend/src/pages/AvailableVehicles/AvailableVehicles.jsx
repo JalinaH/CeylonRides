@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import moment from "moment"; 
+import moment from "moment";
 
 const AvailableVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -55,7 +55,7 @@ const AvailableVehicles = () => {
 
         setPageTitle(title);
 
-        const API_BASE_URL = process.env.VITE_API_TARGET_URL;
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
         const queryString = apiParams.toString();
         const url = `${API_BASE_URL}/api/vehicles/available${
@@ -141,7 +141,7 @@ const AvailableVehicles = () => {
               </div>
               <div className="mt-auto pt-2 border-t border-gray-700">
                 <p className="text-lg font-semibold text-yellow-500 text-right">
-                  ${vehicle.pricingDetails.perDay.toFixed(2)} 
+                  ${vehicle.pricingDetails.perDay.toFixed(2)}
                   <span className="text-xs font-normal text-gray-400">
                     / day
                   </span>
