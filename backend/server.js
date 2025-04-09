@@ -16,7 +16,14 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "https://ceylonrides.netlify.app",
+    methods: "GET, POST, PATCH, DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
 connectDB();
 
