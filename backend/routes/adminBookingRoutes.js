@@ -1,4 +1,3 @@
-// routes/admin/bookingAdminRoutes.js
 import express from "express";
 import {
   adminGetAllBookings,
