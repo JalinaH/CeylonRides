@@ -1,5 +1,5 @@
-import Booking from "../models/booking.js";
-import User from "../models/user.js";
+import Booking from "../../models/booking.js";
+import User from "../../models/user.js";
 
 export const adminGetAllBookings = async (req, res) => {
   console.log("Attempting to fetch all bookings (Admin)...");

@@ -1,6 +1,6 @@
-import User from "../models/user.js";
-import Vehicle from '../models/vehicle.js'; 
-import Booking from "../models/booking.js";
+import User from "../../models/user.js";
+import Vehicle from '../../models/vehicle.js'; 
+import Booking from "../../models/booking.js";
 
 export const adminGetAllUsers = async (req, res) => {
   try {
