@@ -19,7 +19,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://ceylonrides.netlify.app",
+    origin: ["https://ceylonrides.netlify.app", "http://localhost:5173"],
     methods: "GET, POST, PATCH, DELETE",
     allowedHeaders: "Content-Type, Authorization",
   })
