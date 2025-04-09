@@ -35,6 +35,7 @@ const MyBookingsPage = () => {
       setError(null);
 
       try {
+        console.log("Fetching bookings from:", apiUrl);
         const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
