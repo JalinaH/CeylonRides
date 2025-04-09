@@ -16,7 +16,7 @@ const AdminVehicleList = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_TARGET_URL;
 
   useEffect(() => {
     const fetchVehicles = async () => {

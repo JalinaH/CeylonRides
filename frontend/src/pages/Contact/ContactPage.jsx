@@ -4,7 +4,7 @@ import Footer from "../../components/Footer";
 import { FaUser, FaEnvelope, FaPaperPlane, FaSpinner } from "react-icons/fa";
 import { MdSubject } from "react-icons/md";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_TARGET_URL;
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({

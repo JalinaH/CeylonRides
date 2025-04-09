@@ -14,7 +14,7 @@ const AdminBookingList = () => {
   const [loadingDrivers, setLoadingDrivers] = useState({});
   const [updateError, setUpdateError] = useState({});
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_TARGET_URL;
 
   const fetchBookings = useCallback(async () => {
     if (!token) return;
