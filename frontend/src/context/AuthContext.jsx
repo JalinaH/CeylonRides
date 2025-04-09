@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext(null);
 
 const API_URL = "/api";
+const API_BASE_URL = import.meta.env.VITE_API_TARGET_URL;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -39,7 +40,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, fromPath = "/") => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/users/login`, {
+      const loginUrl = `${API_BASE_URL}/api/users/login`;
+      console.log("Attempting to login via:", loginUrl);
+      const response = await fetch(loginUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
