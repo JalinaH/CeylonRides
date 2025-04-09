@@ -9,7 +9,6 @@ import adminUserRoutes from "./routes/adminUserRoutes.js";
 import adminBookingRoutes from "./routes/adminBookingRoutes.js";
 import adminVehicleRoutes from "./routes/adminVehiclesRoutes.js";
 import driverAdminRoutes from "./routes/adminDriverRoutes.js";
-import { verifyAdmin } from "./utils/verifyToken.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
