@@ -18,7 +18,10 @@ const MyBookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { token } = useAuth(); // Get token for authenticated request
+  const { token } = useAuth(); 
+
+  const API_BASE_URL = import.meta.env.VITE_API_TARGET_URL;
+  const apiUrl = `${API_BASE_URL}/api/bookings/my-bookings`;
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -32,10 +35,9 @@ const MyBookingsPage = () => {
       setError(null);
 
       try {
-        const response = await fetch("/api/bookings/my-bookings", {
+        const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
-            // Include the Authorization header
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
