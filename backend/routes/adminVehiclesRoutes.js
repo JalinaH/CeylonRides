@@ -5,7 +5,7 @@ import {
   adminCreateVehicle,
   adminUpdateVehicle,
   adminDeleteVehicle,
-} from "../controllers/adminVehicleController.js";
+} from "../controllers/admin/adminVehicleController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 
 const router = express.Router();
